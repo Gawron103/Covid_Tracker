@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation"
+    app:startDestination="@id/currentCountryFragment">
+
+    <fragment
+        android:id="@+id/currentCountryFragment"
+        android:name="com.example.covid_tracker.currentcountry.view.CurrentCountryFragment"
+        android:label="current_country_fragment"
+        tools:layout="@layout/current_country_fragment" />
+    <fragment
+        android:id="@+id/countryDetails"
+        android:name="com.example.covid_tracker.countrydetails.view.CountryDetails"
+        android:label="country_details_fragment"
+        tools:layout="@layout/country_details_fragment" >
+        <action
+            android:id="@+id/action_countryDetails_to_countriesListFragment"
+            app:destination="@id/countriesListFragment"
+            app:popUpTo="@id/countriesListFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/countriesListFragment"
+        android:name="com.example.covid_tracker.countrieslist.view.CountriesListFragment"
+        android:label="countries_list_fragment"
+        tools:layout="@layout/countries_list_fragment" >
+        <action
+            android:id="@+id/action_countriesListFragment_to_countryDetails"
+            app:destination="@id/countryDetails" />
+        <action
+            android:id="@+id/action_countriesListFragment_to_addCountryFragment"
+            app:destination="@id/addCountryFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/addCountryFragment"
+        android:name="com.example.covid_tracker.addcountry.view.AddCountryFragment"
+        android:label="add_country_fragment"
+        tools:layout="@layout/add_country_fragment" >
+        <action
+            android:id="@+id/action_addCountryFragment_to_countriesListFragment"
+            app:destination="@id/countriesListFragment"
+            app:popUpTo="@id/countriesListFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+</navigation>
