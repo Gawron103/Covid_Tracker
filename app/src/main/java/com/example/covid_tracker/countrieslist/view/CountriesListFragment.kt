@@ -7,6 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.covid_tracker.countrieslist.adapter.CountriesListAdapter
 import com.example.covid_tracker.countrieslist.viewmodel.CountriesListViewModel
 import com.example.covid_tracker.databinding.CountriesListFragmentBinding
 
@@ -15,6 +17,7 @@ class CountriesListFragment : Fragment() {
     private var _binding: CountriesListFragmentBinding? = null
     private val binding get() = _binding!!
     private lateinit var viewModel: CountriesListViewModel
+    private lateinit var countriesListAdapter: CountriesListAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -26,6 +29,8 @@ class CountriesListFragment : Fragment() {
         binding.btnAddCountry.setOnClickListener {
             findNavController().navigate(CountriesListFragmentDirections.actionCountriesListFragmentToAddCountryFragment())
         }
+
+        setupRecyclerView()
 
         return binding.root
     }
@@ -39,6 +44,14 @@ class CountriesListFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
+    }
+
+    private fun setupRecyclerView() {
+        countriesListAdapter = CountriesListAdapter(mutableListOf())
+        binding.rvCountriesList.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = countriesListAdapter
+        }
     }
 
 }
