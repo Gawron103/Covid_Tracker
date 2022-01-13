@@ -1,10 +1,14 @@
 package com.example.covid_tracker.countrieslist.repository
 
+import com.example.covid_tracker.countrieslist.db.CountryDao
+import com.example.covid_tracker.countrieslist.models.Country
+
 class CountriesListRepository(
-    private val localDataSource: LocalDataSource,
-    private val remoteSource: RemoteDataSource
+    private val dao: CountryDao
 ) {
 
-    fun getAllCities() = localDataSource.getAllCountries()
+    fun getAllCountries() = dao.getAllCountries()
+
+    fun deleteCountry(country: Country) = dao.delete(country)
 
 }

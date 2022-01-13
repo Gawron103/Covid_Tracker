@@ -2,6 +2,7 @@ package com.example.covid_tracker.countrieslist.db
 
 import androidx.room.*
 import com.example.covid_tracker.countrieslist.models.Country
+import io.reactivex.Completable
 import io.reactivex.Observable
 
 @Dao
@@ -14,6 +15,6 @@ interface CountryDao {
     fun insert(country: Country)
 
     @Delete
-    fun delete(country: Country)
+    fun delete(country: Country): Completable
 
 }
