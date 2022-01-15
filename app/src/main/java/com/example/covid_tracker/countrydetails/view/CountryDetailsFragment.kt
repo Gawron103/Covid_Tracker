@@ -6,10 +6,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.example.covid_tracker.countrydetails.viewmodel.CountryDetailsViewModel
 import com.example.covid_tracker.databinding.CountryDetailsFragmentBinding
 
-class CountryDetails : Fragment() {
+class CountryDetailsFragment : Fragment() {
+
+    private val args: CountryDetailsFragmentArgs by navArgs()
 
     private var _binding: CountryDetailsFragmentBinding? = null
     private val binding get() = _binding!!
@@ -21,6 +25,12 @@ class CountryDetails : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = CountryDetailsFragmentBinding.inflate(inflater, container, false)
+
+        binding.tvCountryName.text = args.name
+
+        binding.btnBack.setOnClickListener {
+            findNavController().navigate(CountryDetailsFragmentDirections.actionCountryDetailsToCountriesListFragment())
+        }
 
         return binding.root
     }
