@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.covid_tracker.countrieslist.adapter.CountriesListAdapter
 import com.example.covid_tracker.countrieslist.db.CountryDatabase
-import com.example.covid_tracker.countrieslist.models.Country
+import com.example.covid_tracker.countrieslist.models.CountryEntry
 import com.example.covid_tracker.countrieslist.repository.CountriesListRepository
 import com.example.covid_tracker.countrieslist.viewmodel.CountriesListViewModel
 import com.example.covid_tracker.countrieslist.viewmodel.CountriesListViewModelFactory
@@ -110,8 +110,8 @@ class CountriesListFragment : Fragment() {
         })
     }
 
-    private fun adapterDeleteCountryCallback(country: Country) {
-        countriesListViewModel.deleteCountry(country)
+    private fun adapterDeleteCountryCallback(countryEntry: CountryEntry) {
+        countriesListViewModel.deleteCountry(countryEntry)
     }
 
 }

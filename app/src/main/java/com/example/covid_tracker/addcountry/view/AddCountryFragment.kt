@@ -6,8 +6,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.navigation.fragment.findNavController
+import com.example.covid_tracker.addcountry.repository.AddCountryRepository
+import com.example.covid_tracker.addcountry.repository.service.CountryApiService
 import com.example.covid_tracker.addcountry.viewmodel.AddCountryViewModel
+import com.example.covid_tracker.addcountry.viewmodel.AddCountryViewModelFactory
+import com.example.covid_tracker.countrieslist.db.CountryDatabase
 import com.example.covid_tracker.databinding.AddCountryFragmentBinding
 
 
@@ -16,7 +21,7 @@ class AddCountryFragment : Fragment() {
     private var _binding: AddCountryFragmentBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var viewModel: AddCountryViewModel
+    private lateinit var addCountryViewModel: AddCountryViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -29,18 +34,41 @@ class AddCountryFragment : Fragment() {
             findNavController().navigate(AddCountryFragmentDirections.actionAddCountryFragmentToCountriesListFragment())
         }
 
-        return binding.root
-    }
+        binding.btnAdd.setOnClickListener {
+            if (binding.tvEnterCountryLabel.text.isNotEmpty()) {
+                addCountryViewModel.addCountry(binding.etCountry.text.trim().toString())
+                findNavController().navigate(AddCountryFragmentDirections.actionAddCountryFragmentToCountriesListFragment())
+            }
+        }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(AddCountryViewModel::class.java)
-        // TODO: Use the ViewModel
+        setupViewModel()
+        observeData()
+
+        return binding.root
     }
 
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
+    }
+
+    private fun setupViewModel() {
+        addCountryViewModel = ViewModelProvider(
+            requireActivity(),
+            AddCountryViewModelFactory(
+                AddCountryRepository(
+                    CountryDatabase.getInstance(requireContext()).countryDao(),
+                    CountryApiService.create()
+                )
+            )
+        ).get(AddCountryViewModel::class.java)
+    }
+
+    private fun observeData() {
+        addCountryViewModel.isCountryAdded.observe(viewLifecycleOwner, {
+            val msg = if (it) "Country added" else "Cannot add Country"
+            Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
+        })
     }
 
 }

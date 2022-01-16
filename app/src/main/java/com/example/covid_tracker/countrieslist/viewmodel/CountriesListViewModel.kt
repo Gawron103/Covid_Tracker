@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.covid_tracker.countrieslist.models.Country
+import com.example.covid_tracker.countrieslist.models.CountryEntry
 import com.example.covid_tracker.countrieslist.repository.CountriesListRepository
 import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
 import io.reactivex.disposables.CompositeDisposable
@@ -16,8 +16,8 @@ class CountriesListViewModel(
 
     private val disposables = CompositeDisposable()
 
-    private val _countries = MutableLiveData<List<Country>>()
-    val countries: LiveData<List<Country>> get() = _countries
+    private val _countries = MutableLiveData<List<CountryEntry>>()
+    val countries: LiveData<List<CountryEntry>> get() = _countries
 
     private val _isDeleted = MutableLiveData<Boolean>()
     val isDeleted: LiveData<Boolean> get() = _isDeleted
@@ -42,8 +42,8 @@ class CountriesListViewModel(
         disposables.add(getAllDisposable)
     }
 
-    fun deleteCountry(country: Country) {
-        val deleteDisposable = repository.deleteCountry(country)
+    fun deleteCountry(countryEntry: CountryEntry) {
+        val deleteDisposable = repository.deleteCountry(countryEntry)
             .subscribeOn(io())
             .observeOn(mainThread())
             .subscribe(

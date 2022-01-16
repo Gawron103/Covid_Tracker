@@ -4,10 +4,9 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import androidx.sqlite.db.SupportSQLiteDatabase
-import com.example.covid_tracker.countrieslist.models.Country
+import com.example.covid_tracker.countrieslist.models.CountryEntry
 
-@Database(entities = [Country::class], version = 1)
+@Database(entities = [CountryEntry::class], version = 2)
 abstract class CountryDatabase: RoomDatabase() {
 
     abstract fun countryDao(): CountryDao
