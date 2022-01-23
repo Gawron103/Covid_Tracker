@@ -1,4 +1,11 @@
 package com.example.covid_tracker.countrydetails.repository
 
-class CountryDetailsRepository {
+import com.example.covid_tracker.countrydetails.repository.service.CountryApiService
+
+class CountryDetailsRepository(
+    private val apiInterface: CountryApiService
+) {
+
+    fun getCountryData(name: String) = apiInterface.getCountryData(name)
+
 }
