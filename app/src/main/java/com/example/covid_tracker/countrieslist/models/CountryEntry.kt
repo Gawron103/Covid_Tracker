@@ -4,7 +4,8 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "country_table")
-data class Country(
-    @PrimaryKey(autoGenerate = true) val id: Int,
-    val name: String
+data class CountryEntry(
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    val name: String,
+    val flagUrl: String
 )

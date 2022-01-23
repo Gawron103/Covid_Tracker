@@ -1,7 +1,7 @@
 package com.example.covid_tracker.countrieslist.db
 
 import androidx.room.*
-import com.example.covid_tracker.countrieslist.models.Country
+import com.example.covid_tracker.countrieslist.models.CountryEntry
 import io.reactivex.Completable
 import io.reactivex.Observable
 
@@ -9,12 +9,12 @@ import io.reactivex.Observable
 interface CountryDao {
 
     @Query("SELECT * FROM country_table")
-    fun getAllCountries(): Observable<List<Country>>
+    fun getAllCountries(): Observable<List<CountryEntry>>
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
-    fun insert(country: Country)
+    fun insert(countryEntry: CountryEntry): Completable
 
     @Delete
-    fun delete(country: Country): Completable
+    fun delete(countryEntry: CountryEntry): Completable
 
 }

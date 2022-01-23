@@ -1,7 +1,7 @@
 package com.example.covid_tracker.countrieslist.repository
 
 import com.example.covid_tracker.countrieslist.db.CountryDao
-import com.example.covid_tracker.countrieslist.models.Country
+import com.example.covid_tracker.countrieslist.models.CountryEntry
 
 class CountriesListRepository(
     private val dao: CountryDao
@@ -9,6 +9,6 @@ class CountriesListRepository(
 
     fun getAllCountries() = dao.getAllCountries()
 
-    fun deleteCountry(country: Country) = dao.delete(country)
+    fun deleteCountry(countryEntry: CountryEntry) = dao.delete(countryEntry)
 
 }

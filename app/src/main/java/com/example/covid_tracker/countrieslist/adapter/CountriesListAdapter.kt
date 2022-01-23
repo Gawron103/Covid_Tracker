@@ -1,18 +1,18 @@
 package com.example.covid_tracker.countrieslist.adapter
 
-import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.covid_tracker.countrieslist.models.Country
+import com.example.covid_tracker.countrieslist.models.CountryEntry
 import com.example.covid_tracker.countrieslist.view.CountriesListFragmentDirections
 import com.example.covid_tracker.databinding.CountryItemBinding
 
 class CountriesListAdapter(
-    private val countriesList: MutableList<Country> = mutableListOf(),
-    private val countryDeleteCallback: (country:Country) -> Unit
+    private val countriesList: MutableList<CountryEntry> = mutableListOf(),
+    private val countryDeleteCallback: (countryEntry:CountryEntry) -> Unit
 ): RecyclerView.Adapter<CountriesListAdapter.CountryViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CountryViewHolder {
@@ -25,7 +25,7 @@ class CountriesListAdapter(
 
     override fun getItemCount(): Int = countriesList.size
 
-    fun updateCountries(data: List<Country>) {
+    fun updateCountries(data: List<CountryEntry>) {
         countriesList.clear()
         countriesList.addAll(data)
         notifyDataSetChanged()
@@ -41,16 +41,16 @@ class CountriesListAdapter(
         private val itemBinding: CountryItemBinding
     ): RecyclerView.ViewHolder(itemBinding.root) {
 
-        fun bind(country: Country) {
-            itemBinding.tvCountryName.text = country.name
+        fun bind(countryEntry: CountryEntry) {
+            itemBinding.tvCountryName.text = countryEntry.name
             Glide
                 .with(itemBinding.ivCountryFlag)
-                .load("https://countryflagsapi.com/png/${country.name}")
+                .load(countryEntry.flagUrl)
                 .centerCrop()
                 .into(itemBinding.ivCountryFlag)
 
             itemView.setOnClickListener {
-                Navigation.findNavController(it).navigate(CountriesListFragmentDirections.actionCountriesListFragmentToCountryDetails(country.name))
+                Navigation.findNavController(it).navigate(CountriesListFragmentDirections.actionCountriesListFragmentToCountryDetails(countryEntry.name))
             }
         }
 
