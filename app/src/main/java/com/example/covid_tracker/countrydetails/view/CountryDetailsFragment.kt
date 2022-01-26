@@ -75,6 +75,26 @@ class CountryDetailsFragment : Fragment() {
                 updateUI(it)
             }
         })
+
+        countryDetailsViewModel.loadingData.observe(viewLifecycleOwner, {
+            when(it) {
+                true -> {
+                    binding.llCountryInfo.visibility = View.GONE
+                    binding.llCountryData.visibility = View.GONE
+                    binding.pbDataLoad.visibility = View.VISIBLE
+                }
+                false -> {
+                    binding.llCountryInfo.visibility = View.VISIBLE
+                    binding.llCountryData.visibility = View.VISIBLE
+                    binding.pbDataLoad.visibility = View.GONE
+                }
+            }
+
+            binding.pbDataLoad.visibility = when(it) {
+                true -> { View.VISIBLE }
+                false -> { View.GONE }
+            }
+        })
     }
 
     private fun updateUI(countryData: CountryData) {

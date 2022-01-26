@@ -23,7 +23,11 @@ class CountryDetailsViewModel(
     private val _getDataErrorOccured = MutableLiveData<Boolean>()
     val getDataErrorOccured: LiveData<Boolean> get() = _getDataErrorOccured
 
+    private val _loadingData = MutableLiveData<Boolean>()
+    val loadingData: LiveData<Boolean> get() = _loadingData
+
     fun refreshData(name: String) {
+        _loadingData.postValue(true)
         val getDataDisposable = repository.getCountryData(name)
             .subscribeOn(io())
             .observeOn(mainThread())
@@ -34,9 +38,11 @@ class CountryDetailsViewModel(
                         true -> {
                             _countryData.postValue(it.body())
                             _getDataErrorOccured.postValue(false)
+                            _loadingData.postValue(false)
                         }
                         false -> {
                             _getDataErrorOccured.postValue(true)
+                            _loadingData.postValue(false)
                         }
                     }
                 },
