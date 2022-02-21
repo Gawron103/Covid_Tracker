@@ -3,6 +3,7 @@ plugins {
     id 'kotlin-android'
     id 'androidx.navigation.safeargs.kotlin'
     id 'kotlin-kapt'
+    id 'com.google.secrets_gradle_plugin' version '0.4'
 }
 
 android {
@@ -68,5 +69,7 @@ dependencies {
     implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
 
     implementation 'pub.devrel:easypermissions:3.0.0'
+
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.2.0'
 
 }

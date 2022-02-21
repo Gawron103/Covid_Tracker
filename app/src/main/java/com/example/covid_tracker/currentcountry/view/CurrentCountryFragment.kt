@@ -9,7 +9,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.example.covid_tracker.currentcountry.repository.CurrentCountryRepository
+import com.example.covid_tracker.currentcountry.repository.service.GeocodingApiService
 import com.example.covid_tracker.currentcountry.utils.Constants.LOCATION_UPDATE_INTERVAL
 import com.example.covid_tracker.currentcountry.utils.Constants.REQUEST_CODE_LOCATION_PERMISSION
 import com.example.covid_tracker.currentcountry.utils.LocationUtils.startLocationDataUpdate
@@ -23,6 +25,8 @@ import pub.devrel.easypermissions.EasyPermissions
 
 class CurrentCountryFragment : Fragment(), EasyPermissions.PermissionCallbacks {
 
+    private val TAG = "CurrentCountryFragment"
+
     private var _binding: CurrentCountryFragmentBinding? = null
     private val binding get() = _binding!!
     private lateinit var currentCountryViewModel: CurrentCountryViewModel
@@ -31,15 +35,18 @@ class CurrentCountryFragment : Fragment(), EasyPermissions.PermissionCallbacks {
     private val locationCallback = object: LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult) {
             val lastLocation = locationResult.lastLocation
-            Log.d("PIKA", "Location: $lastLocation")
+            currentCountryViewModel.refreshLocationData(
+                lastLocation.latitude.toString(),
+                lastLocation.longitude.toString()
+            )
+            Log.d(TAG, "Location: $lastLocation")
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
         setupViewModel()
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
     }
 
     override fun onCreateView(
@@ -82,13 +89,20 @@ class CurrentCountryFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         currentCountryViewModel = ViewModelProvider(
             requireActivity(),
             CurrentCountryViewModelFactory(
-                CurrentCountryRepository()
+                CurrentCountryRepository(GeocodingApiService.create())
             )
         ).get(CurrentCountryViewModel::class.java)
     }
 
     private fun observeData() {
+        currentCountryViewModel.countryNameLiveData.observe(viewLifecycleOwner, {
+            Log.d(TAG, "Observed country name: $it")
+        })
 
+        currentCountryViewModel.errorGettingCountryNameLiveData.observe(viewLifecycleOwner, {
+            val msg = if (!it) "Country name loaded" else "Cannot get country name"
+            Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
+        })
     }
 
     private fun hasLocationPermissions(context: Context) =
