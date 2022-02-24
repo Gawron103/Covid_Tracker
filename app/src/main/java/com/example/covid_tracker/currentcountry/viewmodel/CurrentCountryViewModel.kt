@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.covid_tracker.countrydetails.model.CountryData
 import com.example.covid_tracker.currentcountry.repository.CurrentCountryRepository
 import io.reactivex.Completable
 import io.reactivex.Single
@@ -19,8 +20,8 @@ class CurrentCountryViewModel(
 
     private val TAG = "CurrentCountryViewModel"
 
-    private val countryName = MutableLiveData<String>()
-    val countryNameLiveData: LiveData<String> get() = countryName
+    private val countryData = MutableLiveData<CountryData>()
+    val countryDataLiveData: LiveData<CountryData> get() = countryData
 
     private val errorGettingCountryName = MutableLiveData<Boolean>()
     val errorGettingCountryNameLiveData: LiveData<Boolean> get() = errorGettingCountryName
@@ -32,12 +33,20 @@ class CurrentCountryViewModel(
         Log.d(TAG, "params: $lat and $lon")
 
         countryNameDisposable = repository.getNameForCoords(lat, lon)
+            .flatMap { country ->
+                repository.getCountryCovidData(country[0].country)
+            }
             .subscribeOn(io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 {
-                    countryName.postValue(it[0].country)
-                    errorGettingCountryName.postValue(false)
+                    val errorAppeared = if (it.isSuccessful) {
+                        countryData.postValue(it.body())
+                        false
+                    } else {
+                        true
+                    }
+                    errorGettingCountryName.postValue(errorAppeared)
                 },
                 {
                     errorGettingCountryName.postValue(true)

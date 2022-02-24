@@ -10,6 +10,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import com.example.covid_tracker.countrydetails.model.CountryData
+import com.example.covid_tracker.countrydetails.repository.service.CountryApiService
 import com.example.covid_tracker.currentcountry.repository.CurrentCountryRepository
 import com.example.covid_tracker.currentcountry.repository.service.GeocodingApiService
 import com.example.covid_tracker.currentcountry.utils.Constants.LOCATION_UPDATE_INTERVAL
@@ -58,6 +60,7 @@ class CurrentCountryFragment : Fragment(), EasyPermissions.PermissionCallbacks {
 
         requestPermissions()
         observeData()
+        showLoading()
 
         return binding.root
     }
@@ -89,20 +92,79 @@ class CurrentCountryFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         currentCountryViewModel = ViewModelProvider(
             requireActivity(),
             CurrentCountryViewModelFactory(
-                CurrentCountryRepository(GeocodingApiService.create())
+                CurrentCountryRepository(
+                    GeocodingApiService.create(),
+                    CountryApiService.create()
+                )
             )
         ).get(CurrentCountryViewModel::class.java)
     }
 
     private fun observeData() {
-        currentCountryViewModel.countryNameLiveData.observe(viewLifecycleOwner, {
-            Log.d(TAG, "Observed country name: $it")
+        currentCountryViewModel.countryDataLiveData.observe(viewLifecycleOwner, { data ->
+            Log.d(TAG, "Got data for current city: $data")
+            updateCountryInfo(data)
+            hideLoading()
         })
 
         currentCountryViewModel.errorGettingCountryNameLiveData.observe(viewLifecycleOwner, {
             val msg = if (!it) "Country name loaded" else "Cannot get country name"
             Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
         })
+    }
+
+    private fun updateCountryInfo(data: CountryData) {
+        // country section
+        binding.tvCurrentCountryName.text = data.country
+        binding.tvCurrentCountryContinent.text = data.continent
+        binding.tvCurrentCountryPopulation.text = data.population.toString()
+
+        // tests section
+        binding.tvCurrentCountryTotalTests.text = data.tests.toString()
+
+        // total section
+        binding.tvCurrentCountryTotalCases.text = data.cases.toString()
+        binding.tvCurrentCountryTotalRecovered.text = data.recovered.toString()
+        binding.tvCurrentCountryTotalDeaths.text = data.deaths.toString()
+
+        // today section
+        binding.tvCurrentCountryTodayNewCases.text = data.todayCases.toString()
+        binding.tvCurrentCountryTodayRecovered.text = data.todayRecovered.toString()
+        binding.tvCurrentCountryTodayDeaths.text = data.todayDeaths.toString()
+    }
+
+    private fun showLoading() {
+        binding.pbCurrentCountryLoading.visibility = View.VISIBLE
+
+        binding.tvCurrentCountryName.visibility = View.GONE
+        binding.tvCurrentCountryContinent.visibility = View.GONE
+        binding.tvCurrentCountryPopulation.visibility = View.GONE
+
+        binding.llCurrentCountryTotalData.visibility = View.GONE
+        binding.llCurrentCountryTodayData.visibility = View.GONE
+
+        binding.tvCurrentCountryTotalLabel.visibility = View.GONE
+        binding.tvCurrentCountryTodayLabel.visibility = View.GONE
+
+        binding.tvCurrentCountryTotalTestsLabel.visibility = View.GONE
+        binding.tvCurrentCountryTotalTests.visibility = View.GONE
+    }
+
+    private fun hideLoading() {
+        binding.pbCurrentCountryLoading.visibility = View.GONE
+
+        binding.tvCurrentCountryName.visibility = View.VISIBLE
+        binding.tvCurrentCountryContinent.visibility = View.VISIBLE
+        binding.tvCurrentCountryPopulation.visibility = View.VISIBLE
+
+        binding.llCurrentCountryTotalData.visibility = View.VISIBLE
+        binding.llCurrentCountryTodayData.visibility = View.VISIBLE
+
+        binding.tvCurrentCountryTotalLabel.visibility = View.VISIBLE
+        binding.tvCurrentCountryTodayLabel.visibility = View.VISIBLE
+
+        binding.tvCurrentCountryTotalTestsLabel.visibility = View.VISIBLE
+        binding.tvCurrentCountryTotalTests.visibility = View.VISIBLE
     }
 
     private fun hasLocationPermissions(context: Context) =
