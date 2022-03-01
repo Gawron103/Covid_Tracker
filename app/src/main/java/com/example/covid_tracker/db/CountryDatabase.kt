@@ -1,10 +1,9 @@
-package com.example.covid_tracker.countrieslist.db
+package com.example.covid_tracker.db
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.example.covid_tracker.countrieslist.models.CountryEntry
 
 @Database(entities = [CountryEntry::class], version = 2)
 abstract class CountryDatabase: RoomDatabase() {
@@ -13,13 +12,14 @@ abstract class CountryDatabase: RoomDatabase() {
 
     companion object {
         private var instance: CountryDatabase? = null
+        private const val dbName: String = "country_database"
 
-        fun getInstance(context: Context): CountryDatabase {
-            if(null == instance) {
+        fun getCountryDB(context: Context): CountryDatabase {
+            if (null == instance) {
                 instance = Room.databaseBuilder(
                     context.applicationContext,
                     CountryDatabase::class.java,
-                    "country_database"
+                    dbName
                 ).fallbackToDestructiveMigration().build()
             }
 

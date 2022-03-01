@@ -13,8 +13,8 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.covid_tracker.countrieslist.adapter.CountriesListAdapter
-import com.example.covid_tracker.countrieslist.db.CountryDatabase
-import com.example.covid_tracker.countrieslist.models.CountryEntry
+import com.example.covid_tracker.db.CountryDatabase
+import com.example.covid_tracker.db.CountryEntry
 import com.example.covid_tracker.countrieslist.repository.CountriesListRepository
 import com.example.covid_tracker.countrieslist.viewmodel.CountriesListViewModel
 import com.example.covid_tracker.countrieslist.viewmodel.CountriesListViewModelFactory
@@ -70,7 +70,7 @@ class CountriesListFragment : Fragment() {
             requireActivity(),
             CountriesListViewModelFactory(
                 CountriesListRepository(
-                    CountryDatabase.getInstance(requireContext()).countryDao()
+                    CountryDatabase.getCountryDB(requireContext()).countryDao()
                 )
             )
         ).get(CountriesListViewModel::class.java)
