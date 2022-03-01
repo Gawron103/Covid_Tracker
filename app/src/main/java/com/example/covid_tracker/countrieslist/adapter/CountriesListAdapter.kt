@@ -42,12 +42,12 @@ class CountriesListAdapter(
     ): RecyclerView.ViewHolder(itemBinding.root) {
 
         fun bind(countryEntry: CountryEntry) {
-            itemBinding.tvCountryName.text = countryEntry.name
+            itemBinding.tvCountryItemName.text = countryEntry.name
             Glide
-                .with(itemBinding.ivCountryFlag)
+                .with(itemBinding.ivCountryItemFlag)
                 .load(countryEntry.flagUrl)
                 .centerCrop()
-                .into(itemBinding.ivCountryFlag)
+                .into(itemBinding.ivCountryItemFlag)
 
             itemView.setOnClickListener {
                 Navigation.findNavController(it).navigate(CountriesListFragmentDirections.actionCountriesListFragmentToCountryDetails(countryEntry.name))

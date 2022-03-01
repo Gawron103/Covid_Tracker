@@ -79,18 +79,18 @@ class CountryDetailsFragment : Fragment() {
         countryDetailsViewModel.loadingData.observe(viewLifecycleOwner, {
             when(it) {
                 true -> {
-                    binding.llCountryInfo.visibility = View.GONE
-                    binding.llCountryData.visibility = View.GONE
-                    binding.pbDataLoad.visibility = View.VISIBLE
+                    binding.llCountryDetailsCountryInfo.visibility = View.GONE
+                    binding.llCountryDetailsCountryData.visibility = View.GONE
+                    binding.pbCountryDetailsLoading.visibility = View.VISIBLE
                 }
                 false -> {
-                    binding.llCountryInfo.visibility = View.VISIBLE
-                    binding.llCountryData.visibility = View.VISIBLE
-                    binding.pbDataLoad.visibility = View.GONE
+                    binding.llCountryDetailsCountryInfo.visibility = View.VISIBLE
+                    binding.llCountryDetailsCountryData.visibility = View.VISIBLE
+                    binding.pbCountryDetailsLoading.visibility = View.GONE
                 }
             }
 
-            binding.pbDataLoad.visibility = when(it) {
+            binding.pbCountryDetailsLoading.visibility = when(it) {
                 true -> { View.VISIBLE }
                 false -> { View.GONE }
             }
@@ -98,19 +98,23 @@ class CountryDetailsFragment : Fragment() {
     }
 
     private fun updateUI(countryData: CountryData) {
-        binding.tvCountryName.text = countryData.country
-        binding.tvTodayCases.text = countryData.todayCases.toString()
-        binding.tvTodayDeaths.text = countryData.todayDeaths.toString()
-        binding.tvTodayRecovered.text = countryData.todayRecovered.toString()
-        binding.tvTotalCases.text = countryData.cases.toString()
-        binding.tvTotalDeaths.text = countryData.deaths.toString()
-        binding.tvTotalRecovered.text = countryData.recovered.toString()
-        binding.tvTests.text = countryData.tests.toString()
+        binding.tvCountryDetailsName.text = countryData.country
+
+        binding.tvCountryDetailsTests.text = countryData.tests.toString()
+
+        binding.tvCountryDetailsTodayCases.text = countryData.todayCases.toString()
+        binding.tvCountryDetailsTodayRecovered.text = countryData.todayRecovered.toString()
+        binding.tvCountryDetailsTodayDeaths.text = countryData.todayDeaths.toString()
+
+        binding.tvCountryDetailsTotalCases.text = countryData.cases.toString()
+        binding.tvCountryDetailsTotalRecovered.text = countryData.recovered.toString()
+        binding.tvCountryDetailsTotalDeaths.text = countryData.deaths.toString()
+
         Glide
-            .with(binding.ivCountryFlag)
+            .with(binding.ivCountryDetailsFlag)
             .load(countryData.countryInfo.flag)
             .centerCrop()
-            .into(binding.ivCountryFlag)
+            .into(binding.ivCountryDetailsFlag)
     }
 
 }
