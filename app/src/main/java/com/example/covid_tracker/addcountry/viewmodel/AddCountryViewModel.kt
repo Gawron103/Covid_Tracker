@@ -4,59 +4,54 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.covid_tracker.addcountry.repository.AddCountryRepository
-import com.example.covid_tracker.countrieslist.models.CountryEntry
-import io.reactivex.Completable
-import io.reactivex.Single
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers.io
+import com.example.covid_tracker.db.CountryEntry
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class AddCountryViewModel(
     private val repository: AddCountryRepository
 ) : ViewModel() {
 
-    private val disposables = CompositeDisposable()
+    private val TAG = "AddCountryViewModel"
 
-    private val _isCountryAdded = MutableLiveData<Boolean>()
-    val isCountryAdded: LiveData<Boolean> get() = _isCountryAdded
+    private val _isCountrySaved = MutableLiveData<Boolean>()
+    val isCountrySaved: LiveData<Boolean> get() = _isCountrySaved
 
-    fun addCountry(name: String) {
-        val countryExistDisposable = repository.getCountryData(name)
-            .flatMapCompletable {
-                when (it.isSuccessful) {
-                    true -> {
-                        val data = it.body()
-                        repository.addCountry(CountryEntry(
-                            0,
-                            data!!.country,
-                            data.countryInfo.flag
-                        ))
-                    } else -> {
-                        Completable.error(RuntimeException("Cannot get country data"))
+    fun saveCountryInDB(name: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            var saveResult = false
+            var logMsg = "Country NOT saved"
+            val response = repository.getCountryData(name)
+
+            if (response.isSuccessful) {
+                response.body()?.let {
+                    if (!checkIfCountryAlreadySaved(it.country)) {
+                        saveCountry(
+                            CountryEntry(
+                                0,
+                                it.country,
+                                it.countryInfo.flag
+                            )
+                        )
+                        saveResult = true
+                        logMsg = "Country SAVED"
                     }
                 }
-            }
-            .subscribeOn(io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(
-                {
-                    Log.d("AddCountryVM", "Country added to DB")
-                    _isCountryAdded.postValue(true)
-                },
-                {
-                    Log.d("AddCountryVM", "Error", it)
-                    _isCountryAdded.postValue(false)
-                }
-            )
 
-        disposables.add(countryExistDisposable)
+                Log.d(TAG, logMsg)
+                _isCountrySaved.postValue(saveResult)
+            }
+        }
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        disposables.dispose()
-        disposables.clear()
+    private suspend fun saveCountry(countryEntry: CountryEntry) {
+        repository.saveCountry(countryEntry)
+    }
+
+    private suspend fun checkIfCountryAlreadySaved(name: String): Boolean {
+        return repository.isCountryAlreadySaved(name)
     }
 
 }

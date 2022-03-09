@@ -45,7 +45,7 @@ class CountryDetailsFragment : Fragment() {
     ): View {
         _binding = CountryDetailsFragmentBinding.inflate(inflater, container, false)
 
-        countryDetailsViewModel.refreshData(args.name)
+        countryDetailsViewModel.fetchCountryData(args.name)
 
         binding.btnBack.setOnClickListener {
             findNavController().navigate(CountryDetailsFragmentDirections.actionCountryDetailsToCountriesListFragment())
@@ -62,7 +62,7 @@ class CountryDetailsFragment : Fragment() {
     }
 
     private fun observeData() {
-        countryDetailsViewModel.getDataErrorOccured.observe(viewLifecycleOwner, {
+        countryDetailsViewModel.countryDataFetchErrorOccurred.observe(viewLifecycleOwner, {
             when(it) {
                 true -> { Log.d("CountryDetails", "Error occured") }
                 false -> { Log.d("CountryDetails", "No error") }
@@ -76,7 +76,7 @@ class CountryDetailsFragment : Fragment() {
             }
         })
 
-        countryDetailsViewModel.loadingData.observe(viewLifecycleOwner, {
+        countryDetailsViewModel.fetchingData.observe(viewLifecycleOwner, {
             when(it) {
                 true -> {
                     binding.llCountryDetailsCountryInfo.visibility = View.GONE

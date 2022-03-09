@@ -4,15 +4,11 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.covid_tracker.countrydetails.model.CountryData
 import com.example.covid_tracker.currentcountry.repository.CurrentCountryRepository
-import io.reactivex.Completable
-import io.reactivex.Single
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers.io
-import retrofit2.http.Query
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class CurrentCountryViewModel(
     private val repository: CurrentCountryRepository
@@ -20,43 +16,35 @@ class CurrentCountryViewModel(
 
     private val TAG = "CurrentCountryViewModel"
 
-    private val countryData = MutableLiveData<CountryData>()
-    val countryDataLiveData: LiveData<CountryData> get() = countryData
+    private val _currentCountryData = MutableLiveData<CountryData>()
+    val currentCountryDataLiveData: LiveData<CountryData> get() = _currentCountryData
 
-    private val errorGettingCountryName = MutableLiveData<Boolean>()
-    val errorGettingCountryNameLiveData: LiveData<Boolean> get() = errorGettingCountryName
+    private val _errorGettingCountryName = MutableLiveData<Boolean>()
+    val errorGettingCountryNameLiveData: LiveData<Boolean> get() = _errorGettingCountryName
 
-    private var countryNameDisposable: Disposable? = null
+    fun fetchDataForCords(lat: String, lon: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            var errorOccurred = true
+            var logMsg = "Cannot fetch data for cords"
+            val countryNameResponse = repository.getNameForCords(lat, lon)
 
-    fun refreshLocationData(lat: String, lon: String) {
-        Log.d(TAG, "refreshLocationData triggered")
-        Log.d(TAG, "params: $lat and $lon")
+            if (countryNameResponse.isSuccessful) {
+                countryNameResponse.body()?.let { geocodingModel ->
+                    val countryCovidDataResponse = repository.getCountryCovidData(geocodingModel[0].country)
 
-        countryNameDisposable = repository.getNameForCoords(lat, lon)
-            .flatMap { country ->
-                repository.getCountryCovidData(country[0].country)
-            }
-            .subscribeOn(io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(
-                {
-                    val errorAppeared = if (it.isSuccessful) {
-                        countryData.postValue(it.body())
-                        false
-                    } else {
-                        true
+                    if (countryCovidDataResponse.isSuccessful) {
+                        countryCovidDataResponse.body()?.let { countryData ->
+                            _currentCountryData.postValue(countryData)
+                            errorOccurred = false
+                            logMsg = "Data for cords fetched"
+                        }
                     }
-                    errorGettingCountryName.postValue(errorAppeared)
-                },
-                {
-                    errorGettingCountryName.postValue(true)
                 }
-            )
-    }
+            }
 
-    override fun onCleared() {
-        super.onCleared()
-        countryNameDisposable?.dispose()
+            Log.d(TAG, logMsg)
+            _errorGettingCountryName.postValue(errorOccurred)
+        }
     }
 
 }

@@ -1,14 +1,14 @@
 package com.example.covid_tracker.countrieslist.repository
 
-import com.example.covid_tracker.countrieslist.db.CountryDao
-import com.example.covid_tracker.countrieslist.models.CountryEntry
+import com.example.covid_tracker.db.CountryDao
+import com.example.covid_tracker.db.CountryEntry
 
 class CountriesListRepository(
     private val dao: CountryDao
 ) {
 
-    fun getAllCountries() = dao.getAllCountries()
+    suspend fun getAllCountries() = dao.getAllCountries()
 
-    fun deleteCountry(countryEntry: CountryEntry) = dao.delete(countryEntry)
+    suspend fun deleteCountry(countryEntry: CountryEntry) = dao.delete(countryEntry)
 
 }

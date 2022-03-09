@@ -9,11 +9,11 @@ class CurrentCountryRepository(
     private val countryDataApi: CountryApiService
 ) {
 
-    fun getNameForCoords(lat: String, lon: String) =
+    suspend fun getNameForCords(lat: String, lon: String) =
         geocodingApi
-            .getNameForCoords(lat, lon, 1, BuildConfig.OPEN_WEATHER_MAP_KEY)
+            .getNameForCords(lat, lon, 1, BuildConfig.OPEN_WEATHER_MAP_KEY)
 
-    fun getCountryCovidData(countryCode: String) =
+    suspend fun getCountryCovidData(countryCode: String) =
         countryDataApi.getCountryData(countryCode)
 
 }

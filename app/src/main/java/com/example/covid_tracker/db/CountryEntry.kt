@@ -1,4 +1,4 @@
-package com.example.covid_tracker.countrieslist.models
+package com.example.covid_tracker.db
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

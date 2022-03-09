@@ -12,7 +12,7 @@ import com.example.covid_tracker.addcountry.repository.AddCountryRepository
 import com.example.covid_tracker.addcountry.repository.service.CountryApiService
 import com.example.covid_tracker.addcountry.viewmodel.AddCountryViewModel
 import com.example.covid_tracker.addcountry.viewmodel.AddCountryViewModelFactory
-import com.example.covid_tracker.countrieslist.db.CountryDatabase
+import com.example.covid_tracker.db.CountryDatabase
 import com.example.covid_tracker.databinding.AddCountryFragmentBinding
 
 
@@ -36,7 +36,7 @@ class AddCountryFragment : Fragment() {
 
         binding.btnAdd.setOnClickListener {
             if (binding.tvEnterCountryLabel.text.isNotEmpty()) {
-                addCountryViewModel.addCountry(binding.etCountry.text.trim().toString())
+                addCountryViewModel.saveCountryInDB(binding.etCountry.text.trim().toString())
                 findNavController().navigate(AddCountryFragmentDirections.actionAddCountryFragmentToCountriesListFragment())
             }
         }
@@ -57,7 +57,7 @@ class AddCountryFragment : Fragment() {
             requireActivity(),
             AddCountryViewModelFactory(
                 AddCountryRepository(
-                    CountryDatabase.getInstance(requireContext()).countryDao(),
+                    CountryDatabase.getCountryDB(requireContext()).countryDao(),
                     CountryApiService.create()
                 )
             )
@@ -65,7 +65,7 @@ class AddCountryFragment : Fragment() {
     }
 
     private fun observeData() {
-        addCountryViewModel.isCountryAdded.observe(viewLifecycleOwner, {
+        addCountryViewModel.isCountrySaved.observe(viewLifecycleOwner, {
             val msg = if (it) "Country added" else "Cannot add Country"
             Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
         })

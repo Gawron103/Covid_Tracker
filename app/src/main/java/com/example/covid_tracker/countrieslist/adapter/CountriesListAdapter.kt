@@ -1,18 +1,17 @@
 package com.example.covid_tracker.countrieslist.adapter
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.covid_tracker.countrieslist.models.CountryEntry
+import com.example.covid_tracker.db.CountryEntry
 import com.example.covid_tracker.countrieslist.view.CountriesListFragmentDirections
 import com.example.covid_tracker.databinding.CountryItemBinding
 
 class CountriesListAdapter(
     private val countriesList: MutableList<CountryEntry> = mutableListOf(),
-    private val countryDeleteCallback: (countryEntry:CountryEntry) -> Unit
+    private val countryDeleteCallback: (countryEntry: CountryEntry) -> Unit
 ): RecyclerView.Adapter<CountriesListAdapter.CountryViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CountryViewHolder {

@@ -10,8 +10,8 @@ data class CountryInfo(
 
     val iso3: String,
 
-    val lat: Int,
+    val lat: Double,
 
-    val long: Int
+    val long: Double
     
 )
