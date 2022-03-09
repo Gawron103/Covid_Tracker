@@ -37,7 +37,7 @@ class CurrentCountryFragment : Fragment(), EasyPermissions.PermissionCallbacks {
     private val locationCallback = object: LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult) {
             val lastLocation = locationResult.lastLocation
-            currentCountryViewModel.refreshLocationData(
+            currentCountryViewModel.fetchDataForCords(
                 lastLocation.latitude.toString(),
                 lastLocation.longitude.toString()
             )
@@ -101,7 +101,7 @@ class CurrentCountryFragment : Fragment(), EasyPermissions.PermissionCallbacks {
     }
 
     private fun observeData() {
-        currentCountryViewModel.countryDataLiveData.observe(viewLifecycleOwner, { data ->
+        currentCountryViewModel.currentCountryDataLiveData.observe(viewLifecycleOwner, { data ->
             Log.d(TAG, "Got data for current city: $data")
             updateCountryInfo(data)
             hideLoading()

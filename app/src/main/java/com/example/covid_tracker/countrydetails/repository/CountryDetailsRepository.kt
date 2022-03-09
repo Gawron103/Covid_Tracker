@@ -6,6 +6,6 @@ class CountryDetailsRepository(
     private val apiInterface: CountryApiService
 ) {
 
-    fun getCountryData(name: String) = apiInterface.getCountryData(name)
+    suspend fun getCountryData(name: String) = apiInterface.getCountryData(name)
 
 }

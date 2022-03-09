@@ -4,60 +4,47 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.covid_tracker.countrydetails.model.CountryData
-
 import com.example.covid_tracker.countrydetails.repository.CountryDetailsRepository
-import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers.io
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class CountryDetailsViewModel(
     private val repository: CountryDetailsRepository
 ) : ViewModel() {
 
-    private val disposable = CompositeDisposable()
+    private val TAG = "CountryDetailsViewModel"
 
     private val _countryData = MutableLiveData<CountryData>()
     val countryData: LiveData<CountryData> get() = _countryData
 
-    private val _getDataErrorOccured = MutableLiveData<Boolean>()
-    val getDataErrorOccured: LiveData<Boolean> get() = _getDataErrorOccured
+    private val _countryDataFetchErrorOccurred = MutableLiveData<Boolean>()
+    val countryDataFetchErrorOccurred: LiveData<Boolean> get() = _countryDataFetchErrorOccurred
 
-    private val _loadingData = MutableLiveData<Boolean>()
-    val loadingData: LiveData<Boolean> get() = _loadingData
+    private val _fetchingData = MutableLiveData<Boolean>()
+    val fetchingData: LiveData<Boolean> get() = _fetchingData
 
-    fun refreshData(name: String) {
-        _loadingData.postValue(true)
-        val getDataDisposable = repository.getCountryData(name)
-            .subscribeOn(io())
-            .observeOn(mainThread())
-            .subscribe(
-                {
-                    Log.d("CountryDetailsVM", "GetCountryData Response: $it")
-                    when (it.isSuccessful) {
-                        true -> {
-                            _countryData.postValue(it.body())
-                            _getDataErrorOccured.postValue(false)
-                            _loadingData.postValue(false)
-                        }
-                        false -> {
-                            _getDataErrorOccured.postValue(true)
-                            _loadingData.postValue(false)
-                        }
-                    }
-                },
-                {
-                    Log.d("CountryDetailsVM", "GetCountryData Error:", it)
+    fun fetchCountryData(name: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            _fetchingData.postValue(true)
+
+            var refreshResult = true
+            var logMsg = "Cannot fetch country details"
+            val response = repository.getCountryData(name)
+
+            if (response.isSuccessful) {
+                response.body()?.let {
+                    _countryData.postValue(it)
+                    refreshResult = false
+                    logMsg = "Fetched country details"
                 }
-            )
+            }
 
-        disposable.add(getDataDisposable)
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        disposable.dispose()
-        disposable.clear()
+            Log.d(TAG, logMsg)
+            _fetchingData.postValue(false)
+            _countryDataFetchErrorOccurred.postValue(refreshResult)
+        }
     }
 
 }
