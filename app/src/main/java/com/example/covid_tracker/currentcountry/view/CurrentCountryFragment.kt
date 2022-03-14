@@ -24,6 +24,7 @@ import com.example.covid_tracker.databinding.CurrentCountryFragmentBinding
 import com.google.android.gms.location.*
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
+import kotlin.math.round
 
 class CurrentCountryFragment : Fragment(), EasyPermissions.PermissionCallbacks {
 
@@ -114,10 +115,12 @@ class CurrentCountryFragment : Fragment(), EasyPermissions.PermissionCallbacks {
     }
 
     private fun updateCountryInfo(data: CountryData) {
+
         // country section
         binding.tvCurrentCountryName.text = data.country
         binding.tvCurrentCountryContinent.text = data.continent
-        binding.tvCurrentCountryPopulation.text = data.population.toString()
+        binding.tvLat.text = "Lat: ${String.format("%.2f", data.countryInfo.lat)}"
+        binding.tvLon.text = "Lon: ${String.format("%.2f", data.countryInfo.long)}"
 
         // tests section
         binding.tvCurrentCountryTotalTests.text = data.tests.toString()
@@ -136,35 +139,45 @@ class CurrentCountryFragment : Fragment(), EasyPermissions.PermissionCallbacks {
     private fun showLoading() {
         binding.pbCurrentCountryLoading.visibility = View.VISIBLE
 
-        binding.tvCurrentCountryName.visibility = View.GONE
-        binding.tvCurrentCountryContinent.visibility = View.GONE
-        binding.tvCurrentCountryPopulation.visibility = View.GONE
+        // location section
+        binding.lLocationInfo.visibility = View.GONE
 
-        binding.llCurrentCountryTotalData.visibility = View.GONE
-        binding.llCurrentCountryTodayData.visibility = View.GONE
+        // total tests section
+        binding.cvTotalTests.visibility = View.GONE
 
+        // total label
         binding.tvCurrentCountryTotalLabel.visibility = View.GONE
+
+        // total grid layout
+        binding.glTotalData.visibility = View.GONE
+
+        // today label
         binding.tvCurrentCountryTodayLabel.visibility = View.GONE
 
-        binding.tvCurrentCountryTotalTestsLabel.visibility = View.GONE
-        binding.tvCurrentCountryTotalTests.visibility = View.GONE
+        // today grid layout
+        binding.glTodayData.visibility = View.GONE
     }
 
     private fun hideLoading() {
         binding.pbCurrentCountryLoading.visibility = View.GONE
 
-        binding.tvCurrentCountryName.visibility = View.VISIBLE
-        binding.tvCurrentCountryContinent.visibility = View.VISIBLE
-        binding.tvCurrentCountryPopulation.visibility = View.VISIBLE
+        // location section
+        binding.lLocationInfo.visibility = View.VISIBLE
 
-        binding.llCurrentCountryTotalData.visibility = View.VISIBLE
-        binding.llCurrentCountryTodayData.visibility = View.VISIBLE
+        // total tests section
+        binding.cvTotalTests.visibility = View.VISIBLE
 
+        // total label
         binding.tvCurrentCountryTotalLabel.visibility = View.VISIBLE
+
+        // total grid layout
+        binding.glTotalData.visibility = View.VISIBLE
+
+        // today label
         binding.tvCurrentCountryTodayLabel.visibility = View.VISIBLE
 
-        binding.tvCurrentCountryTotalTestsLabel.visibility = View.VISIBLE
-        binding.tvCurrentCountryTotalTests.visibility = View.VISIBLE
+        // today grid layout
+        binding.glTodayData.visibility = View.VISIBLE
     }
 
     private fun hasLocationPermissions(context: Context) =
