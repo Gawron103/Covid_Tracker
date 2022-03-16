@@ -22,533 +22,81 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
-                android:id="@+id/iv_CountryName"
+                android:id="@+id/iv_CountryLocation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_coutry_location"
-                app:layout_constraintBottom_toTopOf="@+id/iv_Location"
-                app:layout_constraintEnd_toStartOf="@+id/tv_CurrentCountry_Continent"
+                app:layout_constraintBottom_toTopOf="@+id/iv_LocationCoords"
+                app:layout_constraintEnd_toStartOf="@+id/tv_CurrentCountry_Location_Name"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/tv_CurrentCountry_Continent"
+                android:id="@+id/tv_CurrentCountry_Location_Name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:text="TextView"
-                app:layout_constraintBottom_toTopOf="@+id/tv_lat"
-                app:layout_constraintEnd_toStartOf="@+id/tv_CurrentCountry_Name"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/iv_CountryName"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/tv_CurrentCountry_Name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:text="TextView"
-                app:layout_constraintBottom_toTopOf="@+id/tv_lon"
-                app:layout_constraintStart_toEndOf="@+id/tv_CurrentCountry_Continent"
+                android:text="@string/location_init_text"
+                app:layout_constraintBottom_toTopOf="@+id/tv_LocationCoords"
+                app:layout_constraintStart_toEndOf="@+id/iv_CountryLocation"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
-                android:id="@+id/iv_Location"
+                android:id="@+id/iv_LocationCoords"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:src="@drawable/ic_location_icon"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/tv_lat"
+                app:layout_constraintEnd_toStartOf="@+id/tv_LocationCoords"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/iv_CountryName" />
+                app:layout_constraintTop_toBottomOf="@+id/iv_CountryLocation" />
 
             <TextView
-                android:id="@+id/tv_lat"
+                android:id="@+id/tv_LocationCoords"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:text="TextView"
+                android:text="@string/location_init_text"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/tv_lon"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/iv_Location"
-                app:layout_constraintTop_toBottomOf="@+id/tv_CurrentCountry_Continent" />
-
-            <TextView
-                android:id="@+id/tv_lon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:text="TextView"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/tv_lat"
-                app:layout_constraintTop_toBottomOf="@+id/tv_CurrentCountry_Name" />
+                app:layout_constraintStart_toEndOf="@+id/iv_LocationCoords"
+                app:layout_constraintTop_toBottomOf="@+id/tv_CurrentCountry_Location_Name" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <TextView
-            android:id="@+id/tv_CurrentCountry_TotalLabel"
+        <include
+            android:id="@+id/total_data"
+            layout="@layout/total_data_layout"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_height="match_parent"
             android:layout_marginTop="32dp"
-            android:layout_marginEnd="16dp"
-            android:text="Total"
-            android:textAlignment="center"
-            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/lLocationInfo" />
 
-        <androidx.gridlayout.widget.GridLayout
-            android:id="@+id/gl_TotalData"
+        <include
+            android:id="@+id/today_data"
+            layout="@layout/today_data_layout"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            app:columnCount="2"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_CurrentCountry_TotalLabel"
-            app:rowCount="2">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_columnWeight="1">
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cv_TotalRecovered"
-                    android:layout_width="0dp"
-                    android:layout_height="160dp"
-                    android:layout_margin="10dp"
-                    android:maxWidth="00dp"
-                    android:maxHeight="200dp"
-                    android:minWidth="50dp"
-                    android:minHeight="50dp"
-                    app:cardCornerRadius="10dp"
-                    app:cardElevation="3dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintDimensionRatio="1:1"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                        <TextView
-                            android:id="@+id/tv_CurrentCountry_TotalRecoveredLabel"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="center"
-                            android:text="Total recovered"
-                            android:textAlignment="center"
-                            app:layout_constraintBottom_toTopOf="@+id/tv_CurrentCountry_TotalRecovered"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintHorizontal_bias="0.5"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-                        <TextView
-                            android:id="@+id/tv_CurrentCountry_TotalRecovered"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="center"
-                            android:text="TextView"
-                            android:textAlignment="center"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintHorizontal_bias="0.5"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/tv_CurrentCountry_TotalRecoveredLabel" />
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-                </androidx.cardview.widget.CardView>
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_columnWeight="1">
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cv_TotalDeaths"
-                    android:layout_width="0dp"
-                    android:layout_height="160dp"
-                    android:layout_margin="10dp"
-                    android:maxWidth="200dp"
-                    android:maxHeight="200dp"
-                    android:minWidth="50dp"
-                    android:minHeight="50dp"
-                    app:cardCornerRadius="10dp"
-                    app:cardElevation="3dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintDimensionRatio="1:1"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                        <TextView
-                            android:id="@+id/tv_CurrentCountry_TotalDeathsLabel"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="center"
-                            android:text="Total deaths"
-                            android:textAlignment="center"
-                            app:layout_constraintBottom_toTopOf="@+id/tv_CurrentCountry_TotalDeaths"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintHorizontal_bias="0.5"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-                        <TextView
-                            android:id="@+id/tv_CurrentCountry_TotalDeaths"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="center"
-                            android:text="TextView"
-                            android:textAlignment="center"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintHorizontal_bias="0.5"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/tv_CurrentCountry_TotalDeathsLabel" />
-
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-                </androidx.cardview.widget.CardView>
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_columnWeight="1">
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cv_TotalCases"
-                    android:layout_width="0dp"
-                    android:layout_height="160dp"
-                    android:layout_margin="10dp"
-                    android:maxWidth="200dp"
-                    android:maxHeight="200dp"
-                    android:minWidth="50dp"
-                    android:minHeight="50dp"
-                    app:cardCornerRadius="10dp"
-                    app:cardElevation="3dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintDimensionRatio="1:1"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                        <TextView
-                            android:id="@+id/tv_CurrentCountry_TotalCacesLabel"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="center"
-                            android:text="Total cases"
-                            android:textAlignment="center"
-                            app:layout_constraintBottom_toTopOf="@+id/tv_CurrentCountry_TotalCases"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintHorizontal_bias="0.5"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-                        <TextView
-                            android:id="@+id/tv_CurrentCountry_TotalCases"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="8dp"
-                            android:layout_marginEnd="8dp"
-                            android:layout_weight="1"
-                            android:gravity="center"
-                            android:text="TextView"
-                            android:textAlignment="center"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintHorizontal_bias="0.5"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/tv_CurrentCountry_TotalCacesLabel" />
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-                </androidx.cardview.widget.CardView>
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_columnWeight="1">
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cv_TotalTests"
-                    android:layout_width="0dp"
-                    android:layout_height="160dp"
-                    android:layout_margin="10dp"
-                    android:maxWidth="200dp"
-                    android:maxHeight="200dp"
-                    android:minWidth="50dp"
-                    android:minHeight="50dp"
-                    app:cardCornerRadius="10dp"
-                    app:cardElevation="3dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintDimensionRatio="1:1"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                        <TextView
-                            android:id="@+id/tv_CurrentCountry_TotalTestsLabel"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="8dp"
-                            android:layout_marginEnd="8dp"
-                            android:text="Total tests made"
-                            android:textAlignment="center"
-                            app:layout_constraintBottom_toTopOf="@+id/tv_CurrentCountry_TotalTests"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintHorizontal_bias="0.5"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-                        <TextView
-                            android:id="@+id/tv_CurrentCountry_TotalTests"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="TextView"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintHorizontal_bias="0.5"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/tv_CurrentCountry_TotalTestsLabel" />
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-                </androidx.cardview.widget.CardView>
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-        </androidx.gridlayout.widget.GridLayout>
-
-        <TextView
-            android:id="@+id/tv_CurrentCountry_TodayLabel"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginTop="32dp"
-            android:text="Today"
-            android:textAlignment="center"
-            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/gl_TotalData" />
+            app:layout_constraintTop_toBottomOf="@+id/total_data" />
 
         <ProgressBar
             android:id="@+id/pb_CurrentCountry_Loading"
             style="?android:attr/progressBarStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:foregroundGravity="center"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
-        <androidx.gridlayout.widget.GridLayout
-            android:id="@+id/gl_TodayData"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            app:columnCount="2"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_CurrentCountry_TodayLabel"
-            app:rowCount="2">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_columnWeight="1">
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cv_TodayRecovered"
-                    android:layout_width="0dp"
-                    android:layout_height="160dp"
-                    android:layout_margin="10dp"
-                    android:maxWidth="00dp"
-                    android:maxHeight="200dp"
-                    android:minWidth="50dp"
-                    android:minHeight="50dp"
-                    app:cardCornerRadius="10dp"
-                    app:cardElevation="3dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintDimensionRatio="1:1"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                        <TextView
-                            android:id="@+id/tv_CurrentCountry_TodayRecoveredLabel"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="center"
-                            android:text="New recovered"
-                            android:textAlignment="center"
-                            app:layout_constraintBottom_toTopOf="@+id/tv_CurrentCountry_TodayRecovered"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-                        <TextView
-                            android:id="@+id/tv_CurrentCountry_TodayRecovered"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="center"
-                            android:text="TextView"
-                            android:textAlignment="center"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/tv_CurrentCountry_TodayRecoveredLabel" />
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-                </androidx.cardview.widget.CardView>
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_columnWeight="1">
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cv_TodayDeaths"
-                    android:layout_width="0dp"
-                    android:layout_height="160dp"
-                    android:layout_margin="10dp"
-                    android:maxWidth="00dp"
-                    android:maxHeight="200dp"
-                    android:minWidth="50dp"
-                    android:minHeight="50dp"
-                    app:cardCornerRadius="10dp"
-                    app:cardElevation="3dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintDimensionRatio="1:1"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                        <TextView
-                            android:id="@+id/tv_CurrentCountry_TodayDeathsLabel"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="center"
-                            android:text="New deaths"
-                            android:textAlignment="center"
-                            app:layout_constraintBottom_toTopOf="@+id/tv_CurrentCountry_TodayDeaths"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-                        <TextView
-                            android:id="@+id/tv_CurrentCountry_TodayDeaths"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="center"
-                            android:text="TextView"
-                            android:textAlignment="center"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/tv_CurrentCountry_TodayDeathsLabel" />
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-                </androidx.cardview.widget.CardView>
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_columnSpan="2"
-                app:layout_columnWeight="1">
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cv_TodayCases"
-                    android:layout_width="0dp"
-                    android:layout_height="160dp"
-                    android:layout_margin="10dp"
-                    android:maxWidth="00dp"
-                    android:maxHeight="200dp"
-                    android:minWidth="50dp"
-                    android:minHeight="50dp"
-                    app:cardCornerRadius="10dp"
-                    app:cardElevation="3dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintDimensionRatio="1:1"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                        <TextView
-                            android:id="@+id/tv_CurrentCountry_TodayNewCasesLabel"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="center"
-                            android:text="New cases"
-                            android:textAlignment="center"
-                            app:layout_constraintBottom_toTopOf="@+id/tv_CurrentCountry_TodayNewCases"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-                        <TextView
-                            android:id="@+id/tv_CurrentCountry_TodayNewCases"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="center"
-                            android:text="TextView"
-                            android:textAlignment="center"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/tv_CurrentCountry_TodayNewCasesLabel" />
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-                </androidx.cardview.widget.CardView>
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-        </androidx.gridlayout.widget.GridLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
