@@ -59,8 +59,8 @@ class CurrentCountryFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         _binding = CurrentCountryFragmentBinding.inflate(inflater, container, false)
 
         requestPermissions()
+        hideDataShowLoading()
         observeData()
-        showLoading()
 
         return binding.root
     }
@@ -103,8 +103,9 @@ class CurrentCountryFragment : Fragment(), EasyPermissions.PermissionCallbacks {
     private fun observeData() {
         currentCountryViewModel.currentCountryDataLiveData.observe(viewLifecycleOwner, { data ->
             Log.d(TAG, "Got data for current city: $data")
-            updateCountryInfo(data)
-            hideLoading()
+            hideDataShowLoading()
+            updateUI(data)
+            hideLoadingShowData()
         })
 
         currentCountryViewModel.errorGettingCountryNameLiveData.observe(viewLifecycleOwner, {
@@ -113,69 +114,41 @@ class CurrentCountryFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         })
     }
 
-    private fun updateCountryInfo(data: CountryData) {
-        // country section
-        val locationCordsText = "${"%.2f\u00B0".format(data.countryInfo.lat)}, ${"%.2f\u00B0".format(data.countryInfo.long)}"
-        binding.tvLocationCoords.text = locationCordsText
-        val locationNameText = "${data.continent}, ${data.country}"
+    private fun updateUI(currentCountryData: CountryData) {
+        // Country info section
+        val locationCordsText = "${"%.2f\u00B0".format(currentCountryData.countryInfo.lat)}, ${"%.2f\u00B0".format(currentCountryData.countryInfo.long)}"
+        binding.tvCurrentCountryCoords.text = locationCordsText
+        val locationNameText = "${currentCountryData.continent}, ${currentCountryData.country}"
         binding.tvCurrentCountryLocationName.text = locationNameText
 
-        // tests section
-        binding.totalData.tvCurrentCountryTotalTests.text = data.tests.toString()
+        // Total data section
+        binding.iCurrentCountryTotalData.tvCurrentCountryTotalRecovered.text = currentCountryData.recovered.toString()
+        binding.iCurrentCountryTotalData.tvCurrentCountryTotalDeaths.text = currentCountryData.deaths.toString()
+        binding.iCurrentCountryTotalData.tvCurrentCountryTotalCases.text = currentCountryData.cases.toString()
+        binding.iCurrentCountryTotalData.tvCurrentCountryTotalTests.text = currentCountryData.tests.toString()
 
-        // total section
-        binding.totalData.tvCurrentCountryTotalCases.text = data.cases.toString()
-        binding.totalData.tvCurrentCountryTotalRecovered.text = data.recovered.toString()
-        binding.totalData.tvCurrentCountryTotalDeaths.text = data.deaths.toString()
-
-        // today section
-        binding.todayData.tvCurrentCountryTodayNewCases.text = data.todayCases.toString()
-        binding.todayData.tvCurrentCountryTodayRecovered.text = data.todayRecovered.toString()
-        binding.todayData.tvCurrentCountryTodayDeaths.text = data.todayDeaths.toString()
+        // Today data section
+        binding.iCurrentCountryTodayData.tvCurrentCountryTodayRecovered.text = currentCountryData.todayRecovered.toString()
+        binding.iCurrentCountryTodayData.tvCurrentCountryTodayDeaths.text = currentCountryData.todayDeaths.toString()
+        binding.iCurrentCountryTodayData.tvCurrentCountryTodayNewCases.text = currentCountryData.todayCases.toString()
     }
 
-    private fun showLoading() {
+    private fun hideDataShowLoading() {
+        binding.lCurrentCountryLocationInfo.visibility = View.GONE
+        binding.iCurrentCountryTotalData.tvCurrentCountryTotalLabel.visibility = View.GONE
+        binding.iCurrentCountryTotalData.glTotalData.visibility = View.GONE
+        binding.iCurrentCountryTodayData.tvCurrentCountryTodayLabel.visibility = View.GONE
+        binding.iCurrentCountryTodayData.glTodayData.visibility = View.GONE
         binding.pbCurrentCountryLoading.visibility = View.VISIBLE
-
-        // location section
-        binding.lLocationInfo.visibility = View.GONE
-
-        // total tests section
-        binding.totalData.cvTotalTests.visibility = View.GONE
-
-        // total label
-        binding.totalData.tvCurrentCountryTotalLabel.visibility = View.GONE
-
-        // total grid layout
-        binding.totalData.glTotalData.visibility = View.GONE
-
-        // today label
-        binding.todayData.tvCurrentCountryTodayLabel.visibility = View.GONE
-
-        // today grid layout
-        binding.todayData.glTodayData.visibility = View.GONE
     }
 
-    private fun hideLoading() {
+    private fun hideLoadingShowData() {
+        binding.lCurrentCountryLocationInfo.visibility = View.VISIBLE
+        binding.iCurrentCountryTotalData.tvCurrentCountryTotalLabel.visibility = View.VISIBLE
+        binding.iCurrentCountryTotalData.glTotalData.visibility = View.VISIBLE
+        binding.iCurrentCountryTodayData.tvCurrentCountryTodayLabel.visibility = View.VISIBLE
+        binding.iCurrentCountryTodayData.glTodayData.visibility = View.VISIBLE
         binding.pbCurrentCountryLoading.visibility = View.GONE
-
-        // location section
-        binding.lLocationInfo.visibility = View.VISIBLE
-
-        // total tests section
-        binding.totalData.cvTotalTests.visibility = View.VISIBLE
-
-        // total label
-        binding.totalData.tvCurrentCountryTotalLabel.visibility = View.VISIBLE
-
-        // total grid layout
-        binding.totalData.glTotalData.visibility = View.VISIBLE
-
-        // today label
-        binding.todayData.tvCurrentCountryTodayLabel.visibility = View.VISIBLE
-
-        // today grid layout
-        binding.todayData.glTodayData.visibility = View.VISIBLE
     }
 
     private fun hasLocationPermissions(context: Context) =

@@ -13,7 +13,7 @@
         android:layout_height="wrap_content">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/lLocationInfo"
+            android:id="@+id/l_CurrentCountry_LocationInfo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -22,11 +22,11 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
-                android:id="@+id/iv_CountryLocation"
+                android:id="@+id/iv_CurrentCountry_LocationIcon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_coutry_location"
-                app:layout_constraintBottom_toTopOf="@+id/iv_LocationCoords"
+                app:layout_constraintBottom_toTopOf="@+id/iv_CurrentCountry_CoordsIcon"
                 app:layout_constraintEnd_toStartOf="@+id/tv_CurrentCountry_Location_Name"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
@@ -38,54 +38,54 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:text="@string/location_init_text"
-                app:layout_constraintBottom_toTopOf="@+id/tv_LocationCoords"
-                app:layout_constraintStart_toEndOf="@+id/iv_CountryLocation"
+                app:layout_constraintBottom_toTopOf="@+id/tv_CurrentCountry_Coords"
+                app:layout_constraintStart_toEndOf="@+id/iv_CurrentCountry_LocationIcon"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
-                android:id="@+id/iv_LocationCoords"
+                android:id="@+id/iv_CurrentCountry_CoordsIcon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:src="@drawable/ic_location_icon"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/tv_LocationCoords"
+                app:layout_constraintEnd_toStartOf="@+id/tv_CurrentCountry_Coords"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/iv_CountryLocation" />
+                app:layout_constraintTop_toBottomOf="@+id/iv_CurrentCountry_LocationIcon" />
 
             <TextView
-                android:id="@+id/tv_LocationCoords"
+                android:id="@+id/tv_CurrentCountry_Coords"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:text="@string/location_init_text"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/iv_LocationCoords"
+                app:layout_constraintStart_toEndOf="@+id/iv_CurrentCountry_CoordsIcon"
                 app:layout_constraintTop_toBottomOf="@+id/tv_CurrentCountry_Location_Name" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <include
-            android:id="@+id/total_data"
+            android:id="@+id/i_CurrentCountry_TotalData"
             layout="@layout/total_data_layout"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginTop="32dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/lLocationInfo" />
+            app:layout_constraintTop_toBottomOf="@+id/l_CurrentCountry_LocationInfo" />
 
         <include
-            android:id="@+id/today_data"
+            android:id="@+id/i_CurrentCountry_TodayData"
             layout="@layout/today_data_layout"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginTop="32dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/total_data" />
+            app:layout_constraintTop_toBottomOf="@+id/i_CurrentCountry_TotalData" />
 
         <ProgressBar
             android:id="@+id/pb_CurrentCountry_Loading"
