@@ -22,4 +22,9 @@
     <!-- Country Item layout -->
     <string name="country_item_name_init_text">---</string>
 
+    <!-- Add country layout -->
+    <string name="add_country_label_text">Enter country name</string>
+    <string name="add_country_add_btn_text">Add</string>
+    <string name="add_country_country_input_hint">E.g. Poland</string>
+
 </resources>
