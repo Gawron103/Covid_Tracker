@@ -19,4 +19,7 @@
     <string name="today_data_cases_label">Today cases</string>
     <string name="today_data_init_text">---</string>
 
+    <!-- Country Item layout -->
+    <string name="country_item_name_init_text">---</string>
+
 </resources>
