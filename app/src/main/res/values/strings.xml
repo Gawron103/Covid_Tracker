@@ -1,3 +1,30 @@
 <resources>
     <string name="app_name">Covid_Tracker</string>
+
+    <!-- Location info layout -->
+    <string name="location_init_text">---</string>
+
+    <!-- Total data layout -->
+    <string name="total_data_header_label">Total</string>
+    <string name="total_data_recovered_label">Total recovered</string>
+    <string name="total_data_deaths_label">Total deaths</string>
+    <string name="total_data_cases_label">Total cases</string>
+    <string name="total_data_tests_label">Total tests made</string>
+    <string name="total_data_init_text">---</string>
+
+    <!-- Today data layout -->
+    <string name="today_data_header_label">Today</string>
+    <string name="today_data_recovered_label">Today recovered</string>
+    <string name="today_data_deaths_label">Today deaths</string>
+    <string name="today_data_cases_label">Today cases</string>
+    <string name="today_data_init_text">---</string>
+
+    <!-- Country Item layout -->
+    <string name="country_item_name_init_text">---</string>
+
+    <!-- Add country layout -->
+    <string name="add_country_label_text">Enter country name</string>
+    <string name="add_country_add_btn_text">Add</string>
+    <string name="add_country_country_input_hint">E.g. Poland</string>
+
 </resources>

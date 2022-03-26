@@ -30,13 +30,13 @@ class AddCountryFragment : Fragment() {
     ): View {
         _binding = AddCountryFragmentBinding.inflate(inflater, container, false)
 
-        binding.btnBack.setOnClickListener {
+        binding.ivAddCountryBack.setOnClickListener {
             findNavController().navigate(AddCountryFragmentDirections.actionAddCountryFragmentToCountriesListFragment())
         }
 
         binding.btnAdd.setOnClickListener {
-            if (binding.tvEnterCountryLabel.text.isNotEmpty()) {
-                addCountryViewModel.saveCountryInDB(binding.etCountry.text.trim().toString())
+            if (binding.etAddCountryCountryInput.text.isNotEmpty()) {
+                addCountryViewModel.saveCountryInDB(binding.etAddCountryCountryInput.text.trim().toString())
                 findNavController().navigate(AddCountryFragmentDirections.actionAddCountryFragmentToCountriesListFragment())
             }
         }

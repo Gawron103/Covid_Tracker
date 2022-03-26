@@ -47,7 +47,7 @@ class CountryDetailsFragment : Fragment() {
 
         countryDetailsViewModel.fetchCountryData(args.name)
 
-        binding.btnBack.setOnClickListener {
+        binding.ivCountryDetailsBack.setOnClickListener {
             findNavController().navigate(CountryDetailsFragmentDirections.actionCountryDetailsToCountriesListFragment())
         }
 
@@ -78,21 +78,8 @@ class CountryDetailsFragment : Fragment() {
 
         countryDetailsViewModel.fetchingData.observe(viewLifecycleOwner, {
             when(it) {
-                true -> {
-                    binding.llCountryDetailsCountryInfo.visibility = View.GONE
-                    binding.llCountryDetailsCountryData.visibility = View.GONE
-                    binding.pbCountryDetailsLoading.visibility = View.VISIBLE
-                }
-                false -> {
-                    binding.llCountryDetailsCountryInfo.visibility = View.VISIBLE
-                    binding.llCountryDetailsCountryData.visibility = View.VISIBLE
-                    binding.pbCountryDetailsLoading.visibility = View.GONE
-                }
-            }
-
-            binding.pbCountryDetailsLoading.visibility = when(it) {
-                true -> { View.VISIBLE }
-                false -> { View.GONE }
+                true -> hideDataShowLoading()
+                false -> hideLoadingShowData()
             }
         })
     }
@@ -100,21 +87,40 @@ class CountryDetailsFragment : Fragment() {
     private fun updateUI(countryData: CountryData) {
         binding.tvCountryDetailsName.text = countryData.country
 
-        binding.tvCountryDetailsTests.text = countryData.tests.toString()
+        binding.iCountryDetailsTotalData.tvCurrentCountryTotalRecovered.text = countryData.recovered.toString()
+        binding.iCountryDetailsTotalData.tvCurrentCountryTotalDeaths.text = countryData.deaths.toString()
+        binding.iCountryDetailsTotalData.tvCurrentCountryTotalCases.text = countryData.cases.toString()
+        binding.iCountryDetailsTotalData.tvCurrentCountryTotalTests.text = countryData.tests.toString()
 
-        binding.tvCountryDetailsTodayCases.text = countryData.todayCases.toString()
-        binding.tvCountryDetailsTodayRecovered.text = countryData.todayRecovered.toString()
-        binding.tvCountryDetailsTodayDeaths.text = countryData.todayDeaths.toString()
-
-        binding.tvCountryDetailsTotalCases.text = countryData.cases.toString()
-        binding.tvCountryDetailsTotalRecovered.text = countryData.recovered.toString()
-        binding.tvCountryDetailsTotalDeaths.text = countryData.deaths.toString()
+        binding.iCountryDetailsTodayData.tvCurrentCountryTodayRecovered.text = countryData.todayRecovered.toString()
+        binding.iCountryDetailsTodayData.tvCurrentCountryTodayDeaths.text = countryData.todayDeaths.toString()
+        binding.iCountryDetailsTodayData.tvCurrentCountryTodayNewCases.text = countryData.todayCases.toString()
 
         Glide
             .with(binding.ivCountryDetailsFlag)
             .load(countryData.countryInfo.flag)
             .centerCrop()
             .into(binding.ivCountryDetailsFlag)
+    }
+
+    private fun hideDataShowLoading() {
+        binding.tvCountryDetailsName.visibility = View.GONE
+        binding.ivCountryDetailsFlag.visibility = View.GONE
+        binding.iCountryDetailsTotalData.tvCurrentCountryTotalLabel.visibility = View.GONE
+        binding.iCountryDetailsTotalData.glTotalData.visibility = View.GONE
+        binding.iCountryDetailsTodayData.tvCurrentCountryTodayLabel.visibility = View.GONE
+        binding.iCountryDetailsTodayData.glTodayData.visibility = View.GONE
+        binding.pbCountryDetailsLoading.visibility = View.VISIBLE
+    }
+
+    private fun hideLoadingShowData() {
+        binding.tvCountryDetailsName.visibility = View.VISIBLE
+        binding.ivCountryDetailsFlag.visibility = View.VISIBLE
+        binding.iCountryDetailsTotalData.tvCurrentCountryTotalLabel.visibility = View.VISIBLE
+        binding.iCountryDetailsTotalData.glTotalData.visibility = View.VISIBLE
+        binding.iCountryDetailsTodayData.tvCurrentCountryTodayLabel.visibility = View.VISIBLE
+        binding.iCountryDetailsTodayData.glTodayData.visibility = View.VISIBLE
+        binding.pbCountryDetailsLoading.visibility = View.GONE
     }
 
 }
