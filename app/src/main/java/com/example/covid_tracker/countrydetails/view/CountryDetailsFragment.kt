@@ -19,6 +19,8 @@ import com.example.covid_tracker.databinding.CountryDetailsFragmentBinding
 
 class CountryDetailsFragment : Fragment() {
 
+    private val TAG = "CountryDetailsFragment"
+
     private val args: CountryDetailsFragmentArgs by navArgs()
 
     private var _binding: CountryDetailsFragmentBinding? = null
@@ -63,10 +65,11 @@ class CountryDetailsFragment : Fragment() {
 
     private fun observeData() {
         countryDetailsViewModel.countryDataFetchErrorOccurred.observe(viewLifecycleOwner, {
-            when(it) {
-                true -> { Log.d("CountryDetails", "Error occured") }
-                false -> { Log.d("CountryDetails", "No error") }
-            }
+            val msg = it?.let {
+                "Error fetching data: $it"
+            } ?: "Data fetched"
+
+            Log.d(TAG, msg)
         })
 
         countryDetailsViewModel.countryData.observe(viewLifecycleOwner, {

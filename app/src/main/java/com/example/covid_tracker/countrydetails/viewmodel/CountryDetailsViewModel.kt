@@ -1,14 +1,12 @@
 package com.example.covid_tracker.countrydetails.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.covid_tracker.countrydetails.model.CountryData
 import com.example.covid_tracker.countrydetails.repository.CountryDetailsRepository
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
 class CountryDetailsViewModel(
     private val repository: CountryDetailsRepository
@@ -19,32 +17,42 @@ class CountryDetailsViewModel(
     private val _countryData = MutableLiveData<CountryData>()
     val countryData: LiveData<CountryData> get() = _countryData
 
-    private val _countryDataFetchErrorOccurred = MutableLiveData<Boolean>()
-    val countryDataFetchErrorOccurred: LiveData<Boolean> get() = _countryDataFetchErrorOccurred
+    private val _countryDataFetchErrorOccurred = MutableLiveData<String?>()
+    val countryDataFetchErrorOccurred: LiveData<String?> get() = _countryDataFetchErrorOccurred
 
     private val _fetchingData = MutableLiveData<Boolean>()
     val fetchingData: LiveData<Boolean> get() = _fetchingData
 
-    fun fetchCountryData(name: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            _fetchingData.postValue(true)
+    private val _exceptionHandler = CoroutineExceptionHandler { _, throwable ->
+        onError("Exception: ${throwable.localizedMessage}")
+    }
 
-            var refreshResult = true
-            var logMsg = "Cannot fetch country details"
+    private var _fetchJob: Job? = null
+
+    fun fetchCountryData(name: String) {
+        _fetchingData.value = true
+
+        _fetchJob = viewModelScope.launch(Dispatchers.IO + _exceptionHandler) {
             val response = repository.getCountryData(name)
 
             if (response.isSuccessful) {
-                response.body()?.let {
-                    _countryData.postValue(it)
-                    refreshResult = false
-                    logMsg = "Fetched country details"
+                withContext(Dispatchers.Main) {
+                    _countryData.value = response.body()
+                    _countryDataFetchErrorOccurred.value = null
+                    _fetchingData.value = false
                 }
-            }
-
-            Log.d(TAG, logMsg)
-            _fetchingData.postValue(false)
-            _countryDataFetchErrorOccurred.postValue(refreshResult)
+            } else { onError(response.message()) }
         }
+    }
+
+    private fun onError(message: String) {
+        _countryDataFetchErrorOccurred.value = message
+        _fetchingData.value = false
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        _fetchJob?.cancel()
     }
 
 }
