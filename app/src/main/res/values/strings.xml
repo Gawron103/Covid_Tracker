@@ -29,7 +29,11 @@
     <string name="add_country_loading_text">Saving…</string>
     <string name="add_country_cannot_save_country">Cannot save country</string>
     <string name="add_country_saved_country">Country saved</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- Countries list fragment -->
+    <string name="country_list_fragment_fetch_error">Cannot fetch data</string>
+    <string name="country_list_fragment_fetch_success">Data fetch</string>
+    <string name="country_list_fragment_delete_error">Cannot delete country</string>
+    <string name="country_list_fragment_delete_success">Country deleted</string>
 
 </resources>

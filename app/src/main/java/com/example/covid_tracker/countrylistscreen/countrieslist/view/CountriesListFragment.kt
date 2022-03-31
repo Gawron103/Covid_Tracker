@@ -7,11 +7,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.covid_tracker.R
 import com.example.covid_tracker.countrylistscreen.countrieslist.adapter.CountriesListAdapter
 import com.example.covid_tracker.db.CountryDatabase
 import com.example.covid_tracker.db.CountryEntry
@@ -19,6 +19,7 @@ import com.example.covid_tracker.countrylistscreen.countrieslist.repository.Coun
 import com.example.covid_tracker.countrylistscreen.countrieslist.viewmodel.CountriesListViewModel
 import com.example.covid_tracker.countrylistscreen.countrieslist.viewmodel.CountriesListViewModelFactory
 import com.example.covid_tracker.databinding.CountriesListFragmentBinding
+import com.google.android.material.snackbar.Snackbar
 
 class CountriesListFragment : Fragment() {
 
@@ -26,8 +27,11 @@ class CountriesListFragment : Fragment() {
 
     private var _binding: CountriesListFragmentBinding? = null
     private val binding get() = _binding!!
+
     private lateinit var countriesListViewModel: CountriesListViewModel
+
     private lateinit var countriesListAdapter: CountriesListAdapter
+
     private val swipeCallback: ItemTouchHelper.SimpleCallback =
         object: ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT or ItemTouchHelper.LEFT) {
             override fun onMove(
@@ -106,15 +110,30 @@ class CountriesListFragment : Fragment() {
             }
         })
 
-        countriesListViewModel.isDeleted.observe(viewLifecycleOwner, {
-            if (it) {
-                Toast.makeText(requireContext(), "Country deleted", Toast.LENGTH_SHORT).show()
+        countriesListViewModel.isDeletedSuccessful.observe(viewLifecycleOwner, { isDeleted ->
+            val text = when (isDeleted) {
+                true -> { R.string.country_list_fragment_delete_success }
+                false -> { R.string.country_list_fragment_delete_error }
             }
+            showSnackBar(getString(text))
+        })
+
+        countriesListViewModel.isFetchSuccessful.observe(viewLifecycleOwner, { isFetched ->
+            val text = when (isFetched) {
+                true -> { R.string.country_list_fragment_fetch_success }
+                false -> { R.string.country_list_fragment_fetch_error }
+            }
+            showSnackBar(getString(text))
         })
     }
 
     private fun adapterDeleteCountryCallback(countryEntry: CountryEntry) {
         countriesListViewModel.deleteCountry(countryEntry)
+    }
+
+    private fun showSnackBar(message: String) {
+        val snackBar = parentFragment?.view?.let { Snackbar.make(it, message, Snackbar.LENGTH_LONG) }
+        snackBar?.show()
     }
 
 }
