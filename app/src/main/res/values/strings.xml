@@ -26,5 +26,10 @@
     <string name="add_country_label_text">Enter country name</string>
     <string name="add_country_add_btn_text">Add</string>
     <string name="add_country_country_input_hint">E.g. Poland</string>
+    <string name="add_country_loading_text">Saving…</string>
+    <string name="add_country_cannot_save_country">Cannot save country</string>
+    <string name="add_country_saved_country">Country saved</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_current_location"
+    app:startDestination="@id/currentCountryFragment">
+
+    <fragment
+        android:id="@+id/currentCountryFragment"
+        android:name="com.example.covid_tracker.currentlocationscreen.view.CurrentCountryFragment"
+        android:label="current_country_fragment"
+        tools:layout="@layout/current_country_fragment" />
+</navigation>
