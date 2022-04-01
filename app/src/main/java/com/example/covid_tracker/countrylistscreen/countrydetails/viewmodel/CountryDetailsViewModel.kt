@@ -1,5 +1,6 @@
 package com.example.covid_tracker.countrylistscreen.countrydetails.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -17,14 +18,14 @@ class CountryDetailsViewModel(
     private val _countryData = MutableLiveData<CountryData>()
     val countryData: LiveData<CountryData> get() = _countryData
 
-    private val _countryDataFetchErrorOccurred = MutableLiveData<String?>()
-    val countryDataFetchErrorOccurred: LiveData<String?> get() = _countryDataFetchErrorOccurred
+    private val _dataFetchSuccessful = MutableLiveData<Boolean>()
+    val dataFetchSuccessful: LiveData<Boolean> get() = _dataFetchSuccessful
 
     private val _fetchingData = MutableLiveData<Boolean>()
     val fetchingData: LiveData<Boolean> get() = _fetchingData
 
     private val _exceptionHandler = CoroutineExceptionHandler { _, throwable ->
-        onError("Exception: ${throwable.localizedMessage}")
+        onFetchError("Exception: ${throwable.localizedMessage}")
     }
 
     private var _fetchJob: Job? = null
@@ -38,19 +39,21 @@ class CountryDetailsViewModel(
             if (response.isSuccessful) {
                 withContext(Dispatchers.Main) {
                     _countryData.value = response.body()
-                    _countryDataFetchErrorOccurred.value = null
-                    _fetchingData.value = false
+                    _dataFetchSuccessful.value = true
                 }
-            } else { onError(response.message()) }
+            } else { onFetchError(response.message()) }
+
+            _fetchingData.postValue(false)
         }
     }
 
-    private fun onError(message: String) {
-        _countryDataFetchErrorOccurred.value = message
-        _fetchingData.value = false
+    private fun onFetchError(message: String) {
+        Log.d(TAG, "Fetch error: $message")
+        _dataFetchSuccessful.value = false
     }
 
     override fun onCleared() {
+        Log.d(TAG, "CountryDetailsViewModel onCleared")
         super.onCleared()
         _fetchJob?.cancel()
     }

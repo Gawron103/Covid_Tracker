@@ -36,4 +36,8 @@
     <string name="country_list_fragment_delete_error">Cannot delete country</string>
     <string name="country_list_fragment_delete_success">Country deleted</string>
 
+    <!-- Country details fragment -->
+    <string name="country_details_fragment_data_fetch_error">Cannot fetch data</string>
+    <string name="country_details_fragment_data_fetch_success">Data fetched</string>
+
 </resources>

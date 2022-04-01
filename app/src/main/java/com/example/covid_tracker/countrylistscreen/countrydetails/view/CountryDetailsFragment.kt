@@ -10,12 +10,14 @@ import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
+import com.example.covid_tracker.R
 import com.example.covid_tracker.countrylistscreen.countrydetails.model.CountryData
 import com.example.covid_tracker.countrylistscreen.countrydetails.repository.CountryDetailsRepository
 import com.example.covid_tracker.countrylistscreen.countrydetails.repository.service.CountryApiService
 import com.example.covid_tracker.countrylistscreen.countrydetails.viewmodel.CountryDetailsViewModel
 import com.example.covid_tracker.countrylistscreen.countrydetails.viewmodel.CountryDetailsViewModelFactory
 import com.example.covid_tracker.databinding.CountryDetailsFragmentBinding
+import com.google.android.material.snackbar.Snackbar
 
 class CountryDetailsFragment : Fragment() {
 
@@ -25,19 +27,13 @@ class CountryDetailsFragment : Fragment() {
 
     private var _binding: CountryDetailsFragmentBinding? = null
     private val binding get() = _binding!!
+
     private lateinit var countryDetailsViewModel: CountryDetailsViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        countryDetailsViewModel = ViewModelProvider(
-            this,
-            CountryDetailsViewModelFactory(
-                CountryDetailsRepository(
-                    CountryApiService.create()
-                )
-            )
-        ).get(CountryDetailsViewModel::class.java)
+        setupViewModel()
     }
 
     override fun onCreateView(
@@ -47,11 +43,11 @@ class CountryDetailsFragment : Fragment() {
     ): View {
         _binding = CountryDetailsFragmentBinding.inflate(inflater, container, false)
 
-        countryDetailsViewModel.fetchCountryData(args.name)
-
         binding.ivCountryDetailsBack.setOnClickListener {
             findNavController().popBackStack()
         }
+
+        countryDetailsViewModel.fetchCountryData(args.name)
 
         observeData()
 
@@ -64,28 +60,42 @@ class CountryDetailsFragment : Fragment() {
         _binding = null
     }
 
+    private fun setupViewModel() {
+        countryDetailsViewModel = ViewModelProvider(
+            this,
+            CountryDetailsViewModelFactory(
+                CountryDetailsRepository(
+                    CountryApiService.create()
+                )
+            )
+        ).get(CountryDetailsViewModel::class.java)
+    }
+
     private fun observeData() {
-        countryDetailsViewModel.countryDataFetchErrorOccurred.observe(viewLifecycleOwner, {
-            val msg = it?.let {
-                "Error fetching data: $it"
-            } ?: "Data fetched"
-
-            Log.d(TAG, msg)
-        })
-
-        countryDetailsViewModel.countryData.observe(viewLifecycleOwner, {
-            Log.d("CountryDetails", "Observed data: $it")
-            it?.let {
-                updateUI(it)
+        countryDetailsViewModel.countryData.observe(viewLifecycleOwner, { data ->
+            data?.let {
+                updateUI(data)
             }
         })
 
         countryDetailsViewModel.fetchingData.observe(viewLifecycleOwner, {
-            when(it) {
+            when (it) {
                 true -> hideDataShowLoading()
                 false -> hideLoadingShowData()
             }
         })
+
+        countryDetailsViewModel.dataFetchSuccessful.observe(viewLifecycleOwner, {
+            when(it) {
+                true -> showSnackBar(getString(R.string.country_details_fragment_data_fetch_success))
+                false -> showSnackBar(getString(R.string.country_details_fragment_data_fetch_error))
+            }
+        })
+    }
+
+    private fun showSnackBar(message: String) {
+        val snackBar = parentFragment?.view?.let { Snackbar.make(it, message, Snackbar.LENGTH_LONG) }
+        snackBar?.show()
     }
 
     private fun updateUI(countryData: CountryData) {

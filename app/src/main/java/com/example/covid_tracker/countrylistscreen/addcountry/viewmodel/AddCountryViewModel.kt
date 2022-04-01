@@ -21,8 +21,8 @@ class AddCountryViewModel(
     private val _isCountrySaved = MutableLiveData<Boolean>()
     val isCountrySaved: LiveData<Boolean> get() = _isCountrySaved
 
-    private val exceptionHandler = CoroutineExceptionHandler { _, _ ->
-        onSaveError()
+    private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
+        onSaveError(throwable.localizedMessage ?: "No message")
     }
 
     private var _saveInDbJob: Job? = null
@@ -37,16 +37,19 @@ class AddCountryViewModel(
                         repository.saveCountry(CountryEntry(0, it.country, it.countryInfo.flag))
                         _isCountrySaved.postValue(true)
                     } else {
-                        onSaveError()
+                        onSaveError(response.message())
                     }
                 }
             } else {
-                onSaveError()
+                onSaveError(response.message())
             }
         }
     }
 
-    private fun onSaveError() = _isCountrySaved.postValue(false)
+    private fun onSaveError(message: String) {
+        Log.d(TAG, "Save error: $message")
+        _isCountrySaved.postValue(false)
+    }
 
     override fun onCleared() {
         Log.d(TAG, "AddCountryViewModel onCleared")
