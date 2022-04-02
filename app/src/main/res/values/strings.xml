@@ -40,4 +40,11 @@
     <string name="country_details_fragment_data_fetch_error">Cannot fetch data</string>
     <string name="country_details_fragment_data_fetch_success">Data fetched</string>
 
+    <!-- Current country fragment -->
+    <string name="current_country_fragment_covid_data_fetch_error">Cannot fetch Covid19 data</string>
+    <string name="current_country_fragment_covid_data_fetch_success">Covid19 data fetched</string>
+    <string name="current_country_fragment_name_fetch_error">Cannot fetch country name</string>
+    <string name="current_country_fragment_name_fetch_success">Country name fetched</string>
+    <string name="current_country_fragment_exception_appeared">Exception appeared</string>
+
 </resources>

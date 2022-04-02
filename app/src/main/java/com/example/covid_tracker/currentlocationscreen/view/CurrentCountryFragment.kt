@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import com.example.covid_tracker.R
 import com.example.covid_tracker.countrylistscreen.countrydetails.model.CountryData
 import com.example.covid_tracker.countrylistscreen.countrydetails.repository.service.CountryApiService
 import com.example.covid_tracker.currentlocationscreen.repository.CurrentCountryRepository
@@ -22,6 +23,7 @@ import com.example.covid_tracker.currentlocationscreen.viewmodel.CurrentCountryV
 import com.example.covid_tracker.currentlocationscreen.viewmodel.CurrentCountryViewModelFactory
 import com.example.covid_tracker.databinding.CurrentCountryFragmentBinding
 import com.google.android.gms.location.*
+import com.google.android.material.snackbar.Snackbar
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
 
@@ -102,16 +104,32 @@ class CurrentCountryFragment : Fragment(), EasyPermissions.PermissionCallbacks {
     }
 
     private fun observeData() {
-        currentCountryViewModel.currentCountryDataLiveData.observe(viewLifecycleOwner, { data ->
+        currentCountryViewModel.currentCountryData.observe(viewLifecycleOwner, { data ->
             Log.d(TAG, "Got data for current city: $data")
             hideDataShowLoading()
             updateUI(data)
             hideLoadingShowData()
         })
 
-        currentCountryViewModel.errorGettingCountryNameLiveData.observe(viewLifecycleOwner, {
-            val msg = if (!it) "Country name loaded" else "Cannot get country name"
-            Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
+        currentCountryViewModel.gettingCountryNameLiveSuccessful.observe(viewLifecycleOwner, {
+            when (it) {
+                false -> { showSnackBar(getString(R.string.current_country_fragment_name_fetch_error)) }
+                true -> { showSnackBar(getString(R.string.current_country_fragment_name_fetch_success)) }
+            }
+        })
+
+        currentCountryViewModel.gettingCountryCovidDataSuccessful.observe(viewLifecycleOwner, {
+            when (it) {
+                false -> { showSnackBar(getString(R.string.current_country_fragment_covid_data_fetch_error)) }
+                true -> { showSnackBar(getString(R.string.current_country_fragment_covid_data_fetch_success)) }
+            }
+        })
+
+        currentCountryViewModel.exceptionAppeared.observe(viewLifecycleOwner, {
+            when (it) {
+                true -> { showSnackBar(getString(R.string.current_country_fragment_exception_appeared)) }
+                false -> { /* do nothing */ }
+            }
         })
     }
 
@@ -150,6 +168,11 @@ class CurrentCountryFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         binding.iCurrentCountryTodayData.tvCurrentCountryTodayLabel.visibility = View.VISIBLE
         binding.iCurrentCountryTodayData.glTodayData.visibility = View.VISIBLE
         binding.pbCurrentCountryLoading.visibility = View.GONE
+    }
+
+    private fun showSnackBar(message: String) {
+        val snackBar = parentFragment?.view?.let { Snackbar.make(it, message, Snackbar.LENGTH_LONG) }
+        snackBar?.show()
     }
 
     private fun hasLocationPermissions(context: Context) =

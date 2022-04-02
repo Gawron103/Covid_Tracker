@@ -7,8 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.covid_tracker.countrylistscreen.countrydetails.model.CountryData
 import com.example.covid_tracker.currentlocationscreen.repository.CurrentCountryRepository
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
 class CurrentCountryViewModel(
     private val repository: CurrentCountryRepository
@@ -17,34 +16,65 @@ class CurrentCountryViewModel(
     private val TAG = "CurrentCountryViewModel"
 
     private val _currentCountryData = MutableLiveData<CountryData>()
-    val currentCountryDataLiveData: LiveData<CountryData> get() = _currentCountryData
+    val currentCountryData: LiveData<CountryData> get() = _currentCountryData
 
-    private val _errorGettingCountryName = MutableLiveData<Boolean>()
-    val errorGettingCountryNameLiveData: LiveData<Boolean> get() = _errorGettingCountryName
+    private val _gettingCountryNameSuccessful = MutableLiveData<Boolean>()
+    val gettingCountryNameLiveSuccessful: LiveData<Boolean> get() = _gettingCountryNameSuccessful
+
+    private val _gettingCountryCovidDataSuccessful = MutableLiveData<Boolean>()
+    val gettingCountryCovidDataSuccessful: LiveData<Boolean> get() = _gettingCountryCovidDataSuccessful
+
+    private val _exceptionAppeared = MutableLiveData<Boolean>()
+    val exceptionAppeared: LiveData<Boolean> get() = _exceptionAppeared
+
+    private val coroutineExceptionHelper = CoroutineExceptionHandler { _, throwable ->
+        onException(throwable.localizedMessage ?: "No message")
+    }
+
+    private var _fetchJob: Job? = null
 
     fun fetchDataForCords(lat: String, lon: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            var errorOccurred = true
-            var logMsg = "Cannot fetch data for cords"
+        _exceptionAppeared.value = false
+
+        _fetchJob = viewModelScope.launch(Dispatchers.IO + coroutineExceptionHelper) {
             val countryNameResponse = repository.getNameForCords(lat, lon)
 
             if (countryNameResponse.isSuccessful) {
                 countryNameResponse.body()?.let { geocodingModel ->
-                    val countryCovidDataResponse = repository.getCountryCovidData(geocodingModel[0].country)
+                    val countryCovidDataResponse =
+                        repository.getCountryCovidData(geocodingModel[0].country)
 
                     if (countryCovidDataResponse.isSuccessful) {
                         countryCovidDataResponse.body()?.let { countryData ->
-                            _currentCountryData.postValue(countryData)
-                            errorOccurred = false
-                            logMsg = "Data for cords fetched"
+                            withContext(Dispatchers.Main) {
+                                _currentCountryData.value = countryData
+                            }
                         }
-                    }
+                    } else { onFetchCountryCovidDataError(countryCovidDataResponse.message()) }
                 }
-            }
-
-            Log.d(TAG, logMsg)
-            _errorGettingCountryName.postValue(errorOccurred)
+            } else { onFetchCountryNameError(countryNameResponse.message()) }
         }
+    }
+
+    override fun onCleared() {
+        Log.d(TAG, "CurrentCountryViewModel onCleared")
+        super.onCleared()
+        _fetchJob?.cancel()
+    }
+
+    private fun onException(message: String) {
+        Log.d(TAG, "Error fetching data: $message")
+        _exceptionAppeared.postValue(true)
+    }
+
+    private fun onFetchCountryNameError(message: String) {
+        Log.d(TAG, "Error getting country name: $message")
+        _gettingCountryNameSuccessful.postValue(false)
+    }
+
+    private fun onFetchCountryCovidDataError(message: String) {
+        Log.d(TAG, "Error getting country Covid data: $message")
+        _gettingCountryCovidDataSuccessful.postValue(false)
     }
 
 }
