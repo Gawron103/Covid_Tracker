@@ -15,7 +15,8 @@ import com.example.covid_tracker.countrylistscreen.addcountry.viewmodel.AddCount
 import com.example.covid_tracker.countrylistscreen.addcountry.viewmodel.AddCountryViewModelFactory
 import com.example.covid_tracker.db.CountryDatabase
 import com.example.covid_tracker.databinding.AddCountryFragmentBinding
-import com.google.android.material.snackbar.Snackbar
+import com.example.covid_tracker.utils.DialogCreator
+import com.example.covid_tracker.utils.showSnackBar
 
 
 class AddCountryFragment : Fragment() {
@@ -66,19 +67,18 @@ class AddCountryFragment : Fragment() {
             when (isSaved) {
                 true -> {
                     navigateToCountriesList()
-                    showSnackBar(getString(R.string.add_country_saved_country))
+                    showSnackBar(binding.root, getString(R.string.add_country_saved_country))
                 }
                 false -> {
                     hideLoadingShowLayout()
-                    showSnackBar(getString(R.string.add_country_cannot_save_country))
+                    DialogCreator(
+                        R.string.dialog_title_error,
+                        R.string.dialog_message_cannot_add_country
+                    ).showDialog(requireActivity())
+                    binding.etAddCountryCountryInput.text.clear()
                 }
             }
         })
-    }
-
-    private fun showSnackBar(message: String) {
-        val snackBar = parentFragment?.view?.let { Snackbar.make(it, message, Snackbar.LENGTH_LONG) }
-        snackBar?.show()
     }
 
     private fun navigateToCountriesList() {
@@ -92,7 +92,7 @@ class AddCountryFragment : Fragment() {
                 hideLayoutShowLoading()
                 addCountryViewModel.saveCountryInDB(binding.etAddCountryCountryInput.text.trim().toString())
             }
-            else -> { showSnackBar("Enter country name") }
+            else -> { showSnackBar(binding.root, "Enter country name") }
         }
     }
 

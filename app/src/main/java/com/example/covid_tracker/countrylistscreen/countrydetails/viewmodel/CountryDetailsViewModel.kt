@@ -49,7 +49,7 @@ class CountryDetailsViewModel(
 
     private fun onFetchError(message: String) {
         Log.d(TAG, "Fetch error: $message")
-        _dataFetchSuccessful.value = false
+        _dataFetchSuccessful.postValue(false)
     }
 
     override fun onCleared() {

@@ -17,7 +17,8 @@ import com.example.covid_tracker.countrylistscreen.countrydetails.repository.ser
 import com.example.covid_tracker.countrylistscreen.countrydetails.viewmodel.CountryDetailsViewModel
 import com.example.covid_tracker.countrylistscreen.countrydetails.viewmodel.CountryDetailsViewModelFactory
 import com.example.covid_tracker.databinding.CountryDetailsFragmentBinding
-import com.google.android.material.snackbar.Snackbar
+import com.example.covid_tracker.utils.DialogCreator
+import com.example.covid_tracker.utils.showSnackBar
 
 class CountryDetailsFragment : Fragment() {
 
@@ -87,15 +88,15 @@ class CountryDetailsFragment : Fragment() {
 
         countryDetailsViewModel.dataFetchSuccessful.observe(viewLifecycleOwner, {
             when(it) {
-                true -> showSnackBar(getString(R.string.country_details_fragment_data_fetch_success))
-                false -> showSnackBar(getString(R.string.country_details_fragment_data_fetch_error))
+                true -> showSnackBar(binding.root, getString(R.string.country_details_fragment_data_fetch_success))
+                false -> {
+                    DialogCreator(
+                        R.string.dialog_title_error,
+                        R.string.dialog_message_cannot_fetch_data
+                    ).showDialog(requireActivity())
+                }
             }
         })
-    }
-
-    private fun showSnackBar(message: String) {
-        val snackBar = parentFragment?.view?.let { Snackbar.make(it, message, Snackbar.LENGTH_LONG) }
-        snackBar?.show()
     }
 
     private fun updateUI(countryData: CountryData) {

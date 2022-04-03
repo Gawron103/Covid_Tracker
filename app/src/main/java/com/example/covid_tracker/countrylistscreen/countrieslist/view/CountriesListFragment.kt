@@ -19,7 +19,8 @@ import com.example.covid_tracker.countrylistscreen.countrieslist.repository.Coun
 import com.example.covid_tracker.countrylistscreen.countrieslist.viewmodel.CountriesListViewModel
 import com.example.covid_tracker.countrylistscreen.countrieslist.viewmodel.CountriesListViewModelFactory
 import com.example.covid_tracker.databinding.CountriesListFragmentBinding
-import com.google.android.material.snackbar.Snackbar
+import com.example.covid_tracker.utils.DialogCreator
+import com.example.covid_tracker.utils.showSnackBar
 
 class CountriesListFragment : Fragment() {
 
@@ -111,29 +112,32 @@ class CountriesListFragment : Fragment() {
         })
 
         countriesListViewModel.isDeletedSuccessful.observe(viewLifecycleOwner, { isDeleted ->
-            val text = when (isDeleted) {
-                true -> { R.string.country_list_fragment_delete_success }
-                false -> { R.string.country_list_fragment_delete_error }
+            when (isDeleted) {
+                true -> { showSnackBar(binding.root, getString(R.string.country_list_fragment_delete_success)) }
+                false -> {
+                    DialogCreator(
+                        R.string.dialog_title_error,
+                        R.string.dialog_message_cannot_delete_country
+                    ).showDialog(requireActivity())
+                }
             }
-            showSnackBar(getString(text))
         })
 
         countriesListViewModel.isFetchSuccessful.observe(viewLifecycleOwner, { isFetched ->
-            val text = when (isFetched) {
-                true -> { R.string.country_list_fragment_fetch_success }
-                false -> { R.string.country_list_fragment_fetch_error }
+            when (isFetched) {
+                true -> { showSnackBar(binding.root, getString(R.string.country_list_fragment_fetch_success)) }
+                false -> {
+                    DialogCreator(
+                        R.string.dialog_title_error,
+                        R.string.dialog_message_cannot_fetch_data
+                    ).showDialog(requireActivity())
+                }
             }
-            showSnackBar(getString(text))
         })
     }
 
     private fun adapterDeleteCountryCallback(countryEntry: CountryEntry) {
         countriesListViewModel.deleteCountry(countryEntry)
-    }
-
-    private fun showSnackBar(message: String) {
-        val snackBar = parentFragment?.view?.let { Snackbar.make(it, message, Snackbar.LENGTH_LONG) }
-        snackBar?.show()
     }
 
 }
