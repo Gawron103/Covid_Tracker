@@ -27,6 +27,18 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+
+        flavorDimensions "usage"
+
+        productFlavors {
+            espresso {
+                dimension "usage"
+                testInstrumentationRunnerArguments clearPackageData: 'true'
+            }
+            dev {
+                dimension "usage"
+            }
+        }
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -74,5 +86,10 @@ dependencies {
     implementation 'pub.devrel:easypermissions:3.0.0'
 
     implementation 'com.squareup.okhttp3:logging-interceptor:3.2.0'
+
+    // Espresso
+    androidTestImplementation "androidx.test.espresso:espresso-core:3.4.0"
+    androidTestImplementation "androidx.test:runner:1.4.0"
+    androidTestImplementation "androidx.test:rules:1.4.0"
 
 }
