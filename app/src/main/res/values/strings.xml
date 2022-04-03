@@ -26,5 +26,37 @@
     <string name="add_country_label_text">Enter country name</string>
     <string name="add_country_add_btn_text">Add</string>
     <string name="add_country_country_input_hint">E.g. Poland</string>
+    <string name="add_country_loading_text">Saving…</string>
+    <string name="add_country_cannot_save_country">Cannot save country</string>
+    <string name="add_country_saved_country">Country saved</string>
+
+    <!-- Add country fragment -->
+    <string name="add_country_fragment_cannot_add_country">Cannot add this country</string>
+
+    <!-- Countries list fragment -->
+    <string name="country_list_fragment_fetch_error">Cannot fetch data</string>
+    <string name="country_list_fragment_fetch_success">Data fetch</string>
+    <string name="country_list_fragment_delete_error">Cannot delete country</string>
+    <string name="country_list_fragment_delete_success">Country deleted</string>
+
+    <!-- Country details fragment -->
+    <string name="country_details_fragment_data_fetch_error">Cannot fetch data</string>
+    <string name="country_details_fragment_data_fetch_success">Data fetched</string>
+
+    <!-- Current country fragment -->
+    <string name="current_country_fragment_covid_data_fetch_error">Cannot fetch Covid19 data</string>
+    <string name="current_country_fragment_covid_data_fetch_success">Covid19 data fetched</string>
+    <string name="current_country_fragment_name_fetch_error">Cannot fetch country name</string>
+    <string name="current_country_fragment_name_fetch_success">Country name fetched</string>
+    <string name="current_country_fragment_exception_appeared">Exception appeared</string>
+
+    <!-- Dialog titles and messages -->
+    <string name="dialog_title_error">Error</string>
+    <string name="dialog_message_cannot_add_country">Cannot add this country</string>
+    <string name="dialog_message_cannot_get_country_name">Cannot define country name</string>
+    <string name="dialog_message_cannot_fetch_data">Cannot fetch data</string>
+    <string name="dialog_message_cannot_delete_country">Cannot delete country</string>
+    <string name="dialog_message_exception_message">Unknown exception appeared</string>
+    <string name="dialog_ok_button_text">OK</string>
 
 </resources>
