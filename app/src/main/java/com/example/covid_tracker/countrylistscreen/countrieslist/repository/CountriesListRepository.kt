@@ -7,7 +7,7 @@ class CountriesListRepository(
     private val dao: CountryDao
 ) {
 
-    suspend fun getAllCountries() = dao.getAllCountries()
+    fun getAllCountries() = dao.getAllCountries()
 
     suspend fun deleteCountry(countryEntry: CountryEntry) = dao.delete(countryEntry)
 

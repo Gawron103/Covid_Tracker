@@ -1,15 +1,14 @@
 package com.example.covid_tracker.countrylistscreen.countrieslist.viewmodel
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.example.covid_tracker.db.CountryEntry
 import com.example.covid_tracker.countrylistscreen.countrieslist.repository.CountriesListRepository
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 
 class CountriesListViewModel(
@@ -24,27 +23,30 @@ class CountriesListViewModel(
     private val _isDeletedSuccessful = MutableLiveData<Boolean>()
     val isDeletedSuccessful: LiveData<Boolean> get() = _isDeletedSuccessful
 
-    private val _isFetchSuccessful = MutableLiveData<Boolean>()
-    val isFetchSuccessful: LiveData<Boolean> get() = _isFetchSuccessful
+    private val _isLoadSuccessful = MutableLiveData<Boolean>()
+    val isLoadSuccessful: LiveData<Boolean> get() = _isLoadSuccessful
 
-    private val fetchExceptionHandler = CoroutineExceptionHandler { _, throwable ->
-        onFetchError(throwable.localizedMessage ?: "No message")
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean> get() = _isLoading
+
+    private val loadExceptionHandler = CoroutineExceptionHandler { _, throwable ->
+        onLoadError(throwable.localizedMessage ?: "No message")
     }
     private val deleteExceptionHandler = CoroutineExceptionHandler { _, throwable ->
         onDeleteError(throwable.localizedMessage ?: "No message")
     }
 
-    private var _fetchJob: Job? = null
+    private var _loadJob: Job? = null
     private var _deleteJob: Job? = null
 
-    init {
-        fetchSavedCountries()
-    }
-
-    private fun fetchSavedCountries() {
-        _fetchJob = viewModelScope.launch(Dispatchers.IO + fetchExceptionHandler) {
-            val countries = repository.getAllCountries()
-            _countries.postValue(countries)
+    fun loadData() {
+        _loadJob = viewModelScope.launch(Dispatchers.IO + loadExceptionHandler) {
+            repository.getAllCountries()
+                .onStart { _isLoading.postValue(true) }
+                .collect {
+                    _countries.postValue(it)
+                    _isLoading.postValue(false)
+                }
         }
     }
 
@@ -55,9 +57,10 @@ class CountriesListViewModel(
         }
     }
 
-    private fun onFetchError(message: String) {
-        Log.e(TAG, "Fetch error: $message")
-        _isFetchSuccessful.postValue(false)
+    private fun onLoadError(message: String) {
+        Log.e(TAG, "Load error: $message")
+        _isLoadSuccessful.postValue(false)
+        _isLoading.postValue(false)
     }
 
     private fun onDeleteError(message: String) {
@@ -68,7 +71,7 @@ class CountriesListViewModel(
     override fun onCleared() {
         super.onCleared()
         _deleteJob?.cancel()
-        _fetchJob?.cancel()
+        _loadJob?.cancel()
     }
 
 }

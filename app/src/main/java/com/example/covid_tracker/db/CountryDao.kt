@@ -5,12 +5,13 @@ import androidx.room.Query
 import androidx.room.Insert
 import androidx.room.Delete
 import androidx.room.OnConflictStrategy
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface CountryDao {
 
     @Query("SELECT * FROM country_table")
-    suspend fun getAllCountries(): List<CountryEntry>
+    fun getAllCountries(): Flow<List<CountryEntry>>
 
     @Query("SELECT EXISTS (SELECT 1 FROM country_table WHERE name = :name)")
     suspend fun isCountryAlreadySaved(name: String): Boolean

@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.covid_tracker.R
 import com.example.covid_tracker.countrylistscreen.countrieslist.adapter.CountriesListAdapter
 import com.example.covid_tracker.db.CountryDatabase
-import com.example.covid_tracker.db.CountryEntry
 import com.example.covid_tracker.countrylistscreen.countrieslist.repository.CountriesListRepository
 import com.example.covid_tracker.countrylistscreen.countrieslist.viewmodel.CountriesListViewModel
 import com.example.covid_tracker.countrylistscreen.countrieslist.viewmodel.CountriesListViewModelFactory
@@ -33,22 +32,6 @@ class CountriesListFragment : Fragment() {
 
     private lateinit var countriesListAdapter: CountriesListAdapter
 
-    private val swipeCallback: ItemTouchHelper.SimpleCallback =
-        object: ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT or ItemTouchHelper.LEFT) {
-            override fun onMove(
-                recyclerView: RecyclerView,
-                viewHolder: RecyclerView.ViewHolder,
-                target: RecyclerView.ViewHolder
-            ): Boolean {
-                return false
-            }
-
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                countriesListAdapter.onSwipeItem(viewHolder.adapterPosition)
-            }
-        }
-
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -63,6 +46,8 @@ class CountriesListFragment : Fragment() {
         setupViewModel()
         setupRecyclerView()
         observeCountriesData()
+
+        countriesListViewModel.loadData()
 
         return binding.root
     }
@@ -85,29 +70,40 @@ class CountriesListFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        countriesListAdapter = CountriesListAdapter(
-            mutableListOf(),
-            ::adapterDeleteCountryCallback
-        )
+        countriesListAdapter = CountriesListAdapter()
 
         binding.rvCountriesList.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = countriesListAdapter
-        }.also {
-            val itemTouchHelper = ItemTouchHelper(swipeCallback)
-            itemTouchHelper.attachToRecyclerView(it)
         }
+
+        ItemTouchHelper(object: ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT or ItemTouchHelper.LEFT) {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+                return false
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                countriesListViewModel.deleteCountry(countriesListAdapter.getCountryAt(viewHolder.adapterPosition))
+            }
+        }).attachToRecyclerView(binding.rvCountriesList)
     }
 
     private fun observeCountriesData() {
-        countriesListViewModel.countries.observe(viewLifecycleOwner, {
-            Log.d("CitiesListViewModel", "Received data: $it")
-            if (it.isEmpty()) {
-                countriesListAdapter.updateCountries(mutableListOf())
-                binding.tvNoCountries.visibility = View.VISIBLE
-            } else {
-                countriesListAdapter.updateCountries(it)
-                binding.tvNoCountries.visibility = View.GONE
+        countriesListViewModel.isLoading.observe(viewLifecycleOwner, { isLoading ->
+            binding.pbCountriesListLoading.visibility = if (isLoading) View.VISIBLE else View.GONE
+        })
+
+        countriesListViewModel.countries.observe(viewLifecycleOwner, { data ->
+            when (data.isEmpty()) {
+                true -> { binding.tvNoCountries.visibility = View.VISIBLE }
+                false -> {
+                    countriesListAdapter.setCountries(data)
+                    binding.tvNoCountries.visibility = View.GONE
+                }
             }
         })
 
@@ -123,7 +119,7 @@ class CountriesListFragment : Fragment() {
             }
         })
 
-        countriesListViewModel.isFetchSuccessful.observe(viewLifecycleOwner, { isFetched ->
+        countriesListViewModel.isLoadSuccessful.observe(viewLifecycleOwner, { isFetched ->
             when (isFetched) {
                 true -> { showSnackBar(binding.root, getString(R.string.country_list_fragment_fetch_success)) }
                 false -> {
@@ -134,10 +130,6 @@ class CountriesListFragment : Fragment() {
                 }
             }
         })
-    }
-
-    private fun adapterDeleteCountryCallback(countryEntry: CountryEntry) {
-        countriesListViewModel.deleteCountry(countryEntry)
     }
 
 }

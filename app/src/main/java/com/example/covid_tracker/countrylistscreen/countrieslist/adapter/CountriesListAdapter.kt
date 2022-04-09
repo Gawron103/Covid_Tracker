@@ -9,10 +9,9 @@ import com.example.covid_tracker.db.CountryEntry
 import com.example.covid_tracker.countrylistscreen.countrieslist.view.CountriesListFragmentDirections
 import com.example.covid_tracker.databinding.CountryItemBinding
 
-class CountriesListAdapter(
-    private val countriesList: MutableList<CountryEntry> = mutableListOf(),
-    private val countryDeleteCallback: (countryEntry: CountryEntry) -> Unit
-): RecyclerView.Adapter<CountriesListAdapter.CountryViewHolder>() {
+class CountriesListAdapter: RecyclerView.Adapter<CountriesListAdapter.CountryViewHolder>() {
+
+    private var countries: List<CountryEntry> = listOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CountryViewHolder {
         val itemBinding = CountryItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -20,21 +19,16 @@ class CountriesListAdapter(
     }
 
     override fun onBindViewHolder(holder: CountryViewHolder, position: Int) =
-        holder.bind(countriesList[position])
+        holder.bind(countries[position])
 
-    override fun getItemCount(): Int = countriesList.size
+    override fun getItemCount(): Int = countries.size
 
-    fun updateCountries(data: List<CountryEntry>) {
-        countriesList.clear()
-        countriesList.addAll(data)
+    fun setCountries(countries: List<CountryEntry>) {
+        this.countries = countries
         notifyDataSetChanged()
     }
 
-    fun onSwipeItem(position: Int) {
-        countryDeleteCallback(countriesList[position])
-        countriesList.removeAt(position)
-        notifyItemRemoved(position)
-    }
+    fun getCountryAt(position: Int) = countries[position]
 
     class CountryViewHolder(
         private val itemBinding: CountryItemBinding
@@ -49,7 +43,8 @@ class CountriesListAdapter(
                 .into(itemBinding.ivCountryItemFlag)
 
             itemView.setOnClickListener {
-                Navigation.findNavController(it).navigate(CountriesListFragmentDirections.actionCountriesListFragmentToCountryDetailsFragment(countryEntry.name))
+                Navigation.findNavController(it)
+                    .navigate(CountriesListFragmentDirections.actionCountriesListFragmentToCountryDetailsFragment(countryEntry.name))
             }
         }
 
