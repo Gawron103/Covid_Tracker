@@ -4,6 +4,7 @@ plugins {
     id 'androidx.navigation.safeargs'
     id 'kotlin-kapt'
     id 'com.google.secrets_gradle_plugin' version '0.4'
+    id 'dagger.hilt.android.plugin'
 }
 
 android {
@@ -83,6 +84,7 @@ dependencies {
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
 
+    // Easy permissions
     implementation 'pub.devrel:easypermissions:3.0.0'
 
     implementation 'com.squareup.okhttp3:logging-interceptor:3.2.0'
@@ -91,5 +93,9 @@ dependencies {
     androidTestImplementation "androidx.test.espresso:espresso-core:3.4.0"
     androidTestImplementation "androidx.test:runner:1.4.0"
     androidTestImplementation "androidx.test:rules:1.4.0"
+
+    // Hilt
+    implementation "com.google.dagger:hilt-android:2.38.1"
+    kapt "com.google.dagger:hilt-android-compiler:2.38.1"
 
 }

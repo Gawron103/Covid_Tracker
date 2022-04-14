@@ -7,14 +7,17 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.covid_tracker.countrylistscreen.addcountry.repository.AddCountryRepository
 import com.example.covid_tracker.db.CountryEntry
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class AddCountryViewModel(
+@HiltViewModel
+class AddCountryViewModel @Inject constructor(
     private val repository: AddCountryRepository
-) : ViewModel() {
+): ViewModel() {
 
     private val TAG = "AddCountryViewModel"
 
