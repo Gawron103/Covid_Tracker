@@ -8,7 +8,7 @@
 
     <fragment
         android:id="@+id/currentCountryFragment"
-        android:name="com.example.covid_tracker.currentlocationscreen.view.CurrentCountryFragment"
+        android:name="com.example.covid_tracker.ui.currentcountry.CurrentCountryFragment"
         android:label="current_country_fragment"
         tools:layout="@layout/current_country_fragment" />
 </navigation>
