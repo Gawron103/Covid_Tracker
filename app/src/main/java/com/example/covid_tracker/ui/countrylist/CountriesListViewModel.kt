@@ -4,14 +4,17 @@ import android.util.Log
 import androidx.lifecycle.*
 import com.example.covid_tracker.db.CountryEntry
 import com.example.covid_tracker.repository.CountriesListRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class CountriesListViewModel(
+@HiltViewModel
+class CountriesListViewModel @Inject constructor(
     private val repository: CountriesListRepository
 ) : ViewModel() {
 
