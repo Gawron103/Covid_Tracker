@@ -10,9 +10,9 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
-@InstallIn(SingletonComponent::class)
 @Module
-object AddCountryNetworkModule {
+@InstallIn(SingletonComponent::class)
+object NetworkModule {
 
     @Singleton
     @Provides
@@ -23,6 +23,7 @@ object AddCountryNetworkModule {
             .build()
     }
 
+    @Singleton
     @Provides
     fun provideCountryApi(retrofit: Retrofit): CountryApi {
         return retrofit.create(CountryApi::class.java)

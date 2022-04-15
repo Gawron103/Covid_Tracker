@@ -1,24 +1,24 @@
 package com.example.covid_tracker.ui.countrylist
 
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.covid_tracker.R
 import com.example.covid_tracker.ui.adapter.CountriesListAdapter
-import com.example.covid_tracker.db.CountryDatabase
-import com.example.covid_tracker.repository.CountriesListRepository
 import com.example.covid_tracker.databinding.CountriesListFragmentBinding
 import com.example.covid_tracker.utils.DialogCreator
 import com.example.covid_tracker.utils.showSnackBar
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class CountriesListFragment : Fragment() {
 
     private val TAG = "CountriesListFragment"
@@ -26,7 +26,7 @@ class CountriesListFragment : Fragment() {
     private var _binding: CountriesListFragmentBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var countriesListViewModel: CountriesListViewModel
+    private val countriesListViewModel by viewModels<CountriesListViewModel>()
 
     private lateinit var countriesListAdapter: CountriesListAdapter
 
@@ -41,7 +41,6 @@ class CountriesListFragment : Fragment() {
             findNavController().navigate(CountriesListFragmentDirections.actionCountriesListFragmentToAddCountryFragment())
         }
 
-        setupViewModel()
         setupRecyclerView()
         observeCountriesData()
 
@@ -54,17 +53,6 @@ class CountriesListFragment : Fragment() {
         super.onDestroy()
         Log.d(TAG, "Fragment destroyed")
         _binding = null
-    }
-
-    private fun setupViewModel() {
-        countriesListViewModel = ViewModelProvider(
-            this,
-            CountriesListViewModelFactory(
-                CountriesListRepository(
-                    CountryDatabase.getCountryDB(requireContext()).countryDao()
-                )
-            )
-        ).get(CountriesListViewModel::class.java)
     }
 
     private fun setupRecyclerView() {

@@ -12,7 +12,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object AddCountryDatabaseModule {
+object DatabaseModule {
 
     @Singleton
     @Provides
@@ -22,7 +22,7 @@ object AddCountryDatabaseModule {
 
     @Singleton
     @Provides
-    fun provideAddCountryDao(db: CountryDatabase): CountryDao {
+    fun provideCountryDao(db: CountryDatabase): CountryDao {
         return db.countryDao()
     }
 
