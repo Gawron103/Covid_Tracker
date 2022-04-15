@@ -1,24 +1,22 @@
 package com.example.covid_tracker.countrylistscreen.addcountry.view
 
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.covid_tracker.R
-import com.example.covid_tracker.countrylistscreen.addcountry.repository.AddCountryRepository
-import com.example.covid_tracker.countrylistscreen.addcountry.repository.service.CountryApiService
 import com.example.covid_tracker.countrylistscreen.addcountry.viewmodel.AddCountryViewModel
-import com.example.covid_tracker.countrylistscreen.addcountry.viewmodel.AddCountryViewModelFactory
-import com.example.covid_tracker.db.CountryDatabase
 import com.example.covid_tracker.databinding.AddCountryFragmentBinding
 import com.example.covid_tracker.utils.DialogCreator
 import com.example.covid_tracker.utils.showSnackBar
+import dagger.hilt.android.AndroidEntryPoint
 
 
+@AndroidEntryPoint
 class AddCountryFragment : Fragment() {
 
     private val TAG = "AddCountryFragment"
@@ -26,7 +24,7 @@ class AddCountryFragment : Fragment() {
     private var _binding: AddCountryFragmentBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var addCountryViewModel: AddCountryViewModel
+    private val addCountryViewModel by viewModels<AddCountryViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,7 +36,6 @@ class AddCountryFragment : Fragment() {
         binding.ivAddCountryBack.setOnClickListener { navigateToCountriesList() }
         binding.btnAdd.setOnClickListener { addCountry() }
 
-        setupViewModel()
         observeData()
 
         return binding.root
@@ -48,18 +45,6 @@ class AddCountryFragment : Fragment() {
         super.onDestroy()
         Log.d(TAG, "Fragment destroyed")
         _binding = null
-    }
-
-    private fun setupViewModel() {
-        addCountryViewModel = ViewModelProvider(
-            this,
-            AddCountryViewModelFactory(
-                AddCountryRepository(
-                    CountryDatabase.getCountryDB(requireContext()).countryDao(),
-                    CountryApiService.create()
-                )
-            )
-        ).get(AddCountryViewModel::class.java)
     }
 
     private fun observeData() {

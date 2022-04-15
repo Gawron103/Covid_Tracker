@@ -1,18 +1,15 @@
 package com.example.covid_tracker.countrylistscreen.addcountry.repository
 
-import com.example.covid_tracker.countrylistscreen.addcountry.repository.service.CountryApiService
-import com.example.covid_tracker.db.CountryDao
+import com.example.covid_tracker.countrylistscreen.addcountry.model.CountryData
 import com.example.covid_tracker.db.CountryEntry
+import retrofit2.Response
 
-class AddCountryRepository(
-    private val dao: CountryDao,
-    private val apiInterface: CountryApiService
-) {
+interface AddCountryRepository {
 
-    suspend fun getCountryData(name: String) = apiInterface.getCountryData(name)
+    suspend fun getCountryData(name: String): Response<CountryData>
 
-    suspend fun saveCountry(countryEntry: CountryEntry) = dao.insert(countryEntry)
+    suspend fun saveCountry(countryEntry: CountryEntry)
 
-    suspend fun isCountryAlreadySaved(name: String) = dao.isCountryAlreadySaved(name)
+    suspend fun isCountryAlreadySaved(name: String): Boolean
 
 }
