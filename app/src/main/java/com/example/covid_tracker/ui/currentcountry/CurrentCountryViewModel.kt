@@ -7,9 +7,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.covid_tracker.model.CountryData
 import com.example.covid_tracker.repository.CurrentCountryRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
+import javax.inject.Inject
 
-class CurrentCountryViewModel(
+@HiltViewModel
+class CurrentCountryViewModel @Inject constructor(
     private val repository: CurrentCountryRepository
 ) : ViewModel() {
 
