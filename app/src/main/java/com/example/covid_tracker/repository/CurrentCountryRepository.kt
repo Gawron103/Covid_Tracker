@@ -1,19 +1,13 @@
 package com.example.covid_tracker.repository
 
-import com.example.covid_tracker.BuildConfig
-import com.example.covid_tracker.network.CountryApi
-import com.example.covid_tracker.network.GeocodingApiService
+import com.example.covid_tracker.model.CountryData
+import com.example.covid_tracker.model.GeocodingModel
+import retrofit2.Response
 
-class CurrentCountryRepository(
-    private val geocodingApi: GeocodingApiService,
-    private val countryDataApi: CountryApi
-) {
+interface CurrentCountryRepository {
 
-    suspend fun getNameForCords(lat: String, lon: String) =
-        geocodingApi
-            .getNameForCords(lat, lon, 1, BuildConfig.OPEN_WEATHER_MAP_KEY)
+    suspend fun getNameForCords(lat: String, lon: String): Response<GeocodingModel>
 
-    suspend fun getCountryCovidData(countryCode: String) =
-        countryDataApi.getCountryData(countryCode)
+    suspend fun getCountryCovidData(countryCode: String): Response<CountryData>
 
 }

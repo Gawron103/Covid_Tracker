@@ -2,36 +2,35 @@ package com.example.covid_tracker.ui.currentcountry
 
 import android.Manifest
 import android.content.Context
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import com.example.covid_tracker.R
-import com.example.covid_tracker.repository.CurrentCountryRepository
-import com.example.covid_tracker.network.GeocodingApiService
 import com.example.covid_tracker.utils.LocationUtils.startLocationDataUpdate
 import com.example.covid_tracker.utils.LocationUtils.stopLocationDataUpdate
 import com.example.covid_tracker.databinding.CurrentCountryFragmentBinding
 import com.example.covid_tracker.model.CountryData
-import com.example.covid_tracker.network.CountryApi
 import com.example.covid_tracker.utils.DialogCreator
 import com.example.covid_tracker.utils.LOCATION_UPDATE_INTERVAL
 import com.example.covid_tracker.utils.REQUEST_CODE_LOCATION_PERMISSION
 import com.example.covid_tracker.utils.showSnackBar
 import com.google.android.gms.location.*
+import dagger.hilt.android.AndroidEntryPoint
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
 
+@AndroidEntryPoint
 class CurrentCountryFragment : Fragment(), EasyPermissions.PermissionCallbacks {
 
     private val TAG = "CurrentCountryFragment"
 
     private var _binding: CurrentCountryFragmentBinding? = null
     private val binding get() = _binding!!
-    private lateinit var currentCountryViewModel: CurrentCountryViewModel
+    private val currentCountryViewModel by viewModels<CurrentCountryViewModel>()
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
     private val locationCallback = object: LocationCallback() {
@@ -47,7 +46,6 @@ class CurrentCountryFragment : Fragment(), EasyPermissions.PermissionCallbacks {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setupViewModel()
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
     }
 
@@ -87,18 +85,6 @@ class CurrentCountryFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         super.onDestroy()
         Log.d(TAG, "Fragment destroyed")
         _binding = null
-    }
-
-    private fun setupViewModel() {
-        currentCountryViewModel = ViewModelProvider(
-            this,
-            CurrentCountryViewModelFactory(
-                CurrentCountryRepository(
-                    GeocodingApiService.create(),
-                    CountryApi.create()
-                )
-            )
-        ).get(CurrentCountryViewModel::class.java)
     }
 
     private fun observeData() {

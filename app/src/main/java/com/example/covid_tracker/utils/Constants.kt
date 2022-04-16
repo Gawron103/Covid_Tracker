@@ -5,3 +5,5 @@ const val COVID_DATA_BASE_URL = "https://disease.sh/"
 const val REQUEST_CODE_LOCATION_PERMISSION = 0
 
 const val LOCATION_UPDATE_INTERVAL = 6000L
+
+const val OPEN_WEATHER_MAP_BASE_URL = "http://api.openweathermap.org/"
