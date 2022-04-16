@@ -1,11 +1,10 @@
 package com.example.covid_tracker.repository
 
-import com.example.covid_tracker.network.CountryApi
+import com.example.covid_tracker.model.CountryData
+import retrofit2.Response
 
-class CountryDetailsRepository(
-    private val apiInterface: CountryApi
-) {
+interface CountryDetailsRepository {
 
-    suspend fun getCountryData(name: String) = apiInterface.getCountryData(name)
+    suspend fun getCountryData(name: String): Response<CountryData>
 
 }
