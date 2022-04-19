@@ -14,7 +14,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:usesCleartextTraffic="true"
-        android:theme="@style/Theme.Covid_Tracker">
+        android:theme="@style/Splash_Screen_Theme">
         <activity
             android:name=".ui.main.MainActivity"
             android:exported="true">
