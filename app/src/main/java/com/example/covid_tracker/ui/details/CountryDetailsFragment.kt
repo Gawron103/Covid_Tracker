@@ -1,23 +1,23 @@
 package com.example.covid_tracker.ui.details
 
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.example.covid_tracker.R
-import com.example.covid_tracker.repository.CountryDetailsRepository
 import com.example.covid_tracker.databinding.CountryDetailsFragmentBinding
 import com.example.covid_tracker.model.CountryData
-import com.example.covid_tracker.network.CountryApi
 import com.example.covid_tracker.utils.DialogCreator
 import com.example.covid_tracker.utils.showSnackBar
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class CountryDetailsFragment : Fragment() {
 
     private val TAG = "CountryDetailsFragment"
@@ -27,12 +27,10 @@ class CountryDetailsFragment : Fragment() {
     private var _binding: CountryDetailsFragmentBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var countryDetailsViewModel: CountryDetailsViewModel
+    private val countryDetailsViewModel by viewModels<CountryDetailsViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        setupViewModel()
     }
 
     override fun onCreateView(
@@ -57,17 +55,6 @@ class CountryDetailsFragment : Fragment() {
         super.onDestroy()
         Log.d(TAG, "Fragment destroyed")
         _binding = null
-    }
-
-    private fun setupViewModel() {
-        countryDetailsViewModel = ViewModelProvider(
-            this,
-            CountryDetailsViewModelFactory(
-                CountryDetailsRepository(
-                    CountryApi.create()
-                )
-            )
-        ).get(CountryDetailsViewModel::class.java)
     }
 
     private fun observeData() {

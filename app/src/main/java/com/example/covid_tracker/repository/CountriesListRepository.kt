@@ -1,14 +1,12 @@
 package com.example.covid_tracker.repository
 
-import com.example.covid_tracker.db.CountryDao
 import com.example.covid_tracker.db.CountryEntry
+import kotlinx.coroutines.flow.Flow
 
-class CountriesListRepository(
-    private val dao: CountryDao
-) {
+interface CountriesListRepository {
 
-    fun getAllCountries() = dao.getAllCountries()
+    fun getAllCountries(): Flow<List<CountryEntry>>
 
-    suspend fun deleteCountry(countryEntry: CountryEntry) = dao.delete(countryEntry)
+    suspend fun deleteCountry(countryEntry: CountryEntry)
 
 }
