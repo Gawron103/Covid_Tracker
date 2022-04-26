@@ -55,5 +55,8 @@ jobs:
       - name: Clean
         run: ./gradlew clean     
           
+      - name: Show tasks
+        run: ./gradlew tasks
+          
       - name: Run Android KTLinter
         run: ./app/gradlew ktlintCheck
