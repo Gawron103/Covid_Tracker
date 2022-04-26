@@ -52,8 +52,8 @@ jobs:
           distribution: 'temurin'
           cache: gradle
           
-      - name: Run Android Linter
-        run: ./gradlew lint
-        
-      - name: Run Spotless
-        run: ./gradlew spotlessCheck
+      - name: Clean
+        run: ./gradlew clean     
+          
+      - name: Run Android KTLinter
+        run: ./gradlew ktlintCheck
