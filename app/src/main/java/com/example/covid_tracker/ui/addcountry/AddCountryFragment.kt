@@ -35,7 +35,7 @@ class AddCountryFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        setupButtons()
+        binding.btnAdd.setOnClickListener { addCountry() }
         observeIfCountryAdded()
     }
 
@@ -67,11 +67,6 @@ class AddCountryFragment : Fragment() {
                 }
             }
         })
-    }
-
-    private fun setupButtons() {
-        binding.ivAddCountryBack.setOnClickListener { navigateToCountriesList() }
-        binding.btnAdd.setOnClickListener { addCountry() }
     }
 
     private fun navigateToCountriesList() {

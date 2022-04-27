@@ -2,10 +2,16 @@
 <navigation
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_main"
     app:startDestination="@id/nav_current_location">
 
     <include app:graph="@navigation/nav_current_location" />
     <include app:graph="@navigation/nav_saved_countries" />
+    <fragment
+        android:id="@+id/addCountryFragment"
+        android:name="com.example.covid_tracker.ui.addcountry.AddCountryFragment"
+        android:label="add_country_fragment"
+        tools:layout="@layout/add_country_fragment" />
 
 </navigation>

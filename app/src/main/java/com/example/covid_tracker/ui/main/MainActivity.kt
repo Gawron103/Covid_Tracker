@@ -28,10 +28,18 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNavigationView.setupWithNavController(navController)
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            if (destination.id == R.id.countryDetailsFragment) {
-                binding.bottomNavigationView.visibility = View.GONE
-            } else {
-                binding.bottomNavigationView.visibility = View.VISIBLE
+            when (destination.id) {
+                R.id.countriesListFragment, R.id.addCountryFragment -> {
+                    binding.bottomNavigationView.menu.findItem(R.id.addCountryFragment).isVisible = true
+                }
+                R.id.countryDetailsFragment -> {
+                    binding.bottomNavigationView.visibility = View.GONE
+                    binding.bottomNavigationView.menu.findItem(R.id.addCountryFragment).isVisible = false
+                }
+                else -> {
+                    binding.bottomNavigationView.visibility = View.VISIBLE
+                    binding.bottomNavigationView.menu.findItem(R.id.addCountryFragment).isVisible = false
+                }
             }
         }
     }
