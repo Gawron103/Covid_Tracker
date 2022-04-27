@@ -9,4 +9,9 @@
         android:id="@+id/nav_saved_countries"
         android:icon="@drawable/ic_coutry_location"
         android:title="List" />
+
+    <item
+        android:id="@+id/addCountryFragment"
+        android:icon="@drawable/ic_add"
+        android:title="Add" />
 </menu>

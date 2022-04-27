@@ -7,20 +7,10 @@
     app:startDestination="@id/countriesListFragment">
 
     <fragment
-        android:id="@+id/addCountryFragment"
-        android:name="com.example.covid_tracker.ui.addcountry.AddCountryFragment"
-        android:label="add_country_fragment"
-        tools:layout="@layout/add_country_fragment" />
-    <fragment
         android:id="@+id/countriesListFragment"
         android:name="com.example.covid_tracker.ui.countrylist.CountriesListFragment"
         android:label="countries_list_fragment"
         tools:layout="@layout/countries_list_fragment" >
-        <action
-            android:id="@+id/action_countriesListFragment_to_addCountryFragment"
-            app:destination="@id/addCountryFragment"
-            app:popUpTo="@id/countriesListFragment"
-            app:popUpToInclusive="false" />
         <action
             android:id="@+id/action_countriesListFragment_to_countryDetailsFragment"
             app:destination="@id/countryDetailsFragment"

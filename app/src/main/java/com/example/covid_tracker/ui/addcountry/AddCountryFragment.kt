@@ -32,7 +32,6 @@ class AddCountryFragment : Fragment() {
     ): View {
         _binding = AddCountryFragmentBinding.inflate(inflater, container, false)
 
-        binding.ivAddCountryBack.setOnClickListener { navigateToCountriesList() }
         binding.btnAdd.setOnClickListener { addCountry() }
 
         observeData()

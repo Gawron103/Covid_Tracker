@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -36,10 +35,6 @@ class CountriesListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = CountriesListFragmentBinding.inflate(inflater, container, false)
-
-        binding.btnAddCountry.setOnClickListener {
-            findNavController().navigate(CountriesListFragmentDirections.actionCountriesListFragmentToAddCountryFragment())
-        }
 
         setupRecyclerView()
         observeCountriesData()
