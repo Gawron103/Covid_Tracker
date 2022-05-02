@@ -29,48 +29,56 @@ class CountryDetailsFragment : Fragment() {
 
     private val countryDetailsViewModel by viewModels<CountryDetailsViewModel>()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = CountryDetailsFragmentBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding.ivCountryDetailsBack.setOnClickListener {
             findNavController().popBackStack()
         }
 
+        observeCountryData()
+        observeIfFetching()
+        observeIfFetchSuccessful()
+
         countryDetailsViewModel.fetchCountryData(args.name)
+    }
 
-        observeData()
-
-        return binding.root
+    override fun onDestroyView() {
+        super.onDestroyView()
+        Log.d(TAG, "Binding reference set to null")
+        _binding = null
     }
 
     override fun onDestroy() {
         super.onDestroy()
         Log.d(TAG, "Fragment destroyed")
-        _binding = null
     }
 
-    private fun observeData() {
+    private fun observeCountryData() {
         countryDetailsViewModel.countryData.observe(viewLifecycleOwner, { data ->
             data?.let {
                 updateUI(data)
             }
         })
+    }
 
+    private fun observeIfFetching() {
         countryDetailsViewModel.fetchingData.observe(viewLifecycleOwner, {
             when (it) {
                 true -> hideDataShowLoading()
                 false -> hideLoadingShowData()
             }
         })
+    }
 
+    private fun observeIfFetchSuccessful() {
         countryDetailsViewModel.dataFetchSuccessful.observe(viewLifecycleOwner, {
             when(it) {
                 true -> showSnackBar(binding.root, getString(R.string.country_details_fragment_data_fetch_success))

@@ -36,23 +36,33 @@ class CountriesListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = CountriesListFragmentBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding.btnAddCountry.setOnClickListener {
             findNavController().navigate(CountriesListFragmentDirections.actionCountriesListFragmentToAddCountryFragment())
         }
 
         setupRecyclerView()
-        observeCountriesData()
+
+        observeLoading()
+        observeIfCountriesLoaded()
+        observeCountries()
+        observeIfCountryDeleted()
 
         countriesListViewModel.loadData()
+    }
 
-        return binding.root
+    override fun onDestroyView() {
+        super.onDestroyView()
+        Log.d(TAG, "Binding reference set to null")
+        _binding = null
     }
 
     override fun onDestroy() {
         super.onDestroy()
         Log.d(TAG, "Fragment destroyed")
-        _binding = null
     }
 
     private fun setupRecyclerView() {
@@ -78,11 +88,7 @@ class CountriesListFragment : Fragment() {
         }).attachToRecyclerView(binding.rvCountriesList)
     }
 
-    private fun observeCountriesData() {
-        countriesListViewModel.isLoading.observe(viewLifecycleOwner, { isLoading ->
-            binding.pbCountriesListLoading.visibility = if (isLoading) View.VISIBLE else View.GONE
-        })
-
+    private fun observeCountries() {
         countriesListViewModel.countries.observe(viewLifecycleOwner, { data ->
             when (data.isEmpty()) {
                 true -> { binding.tvNoCountries.visibility = View.VISIBLE }
@@ -92,7 +98,9 @@ class CountriesListFragment : Fragment() {
                 }
             }
         })
+    }
 
+    private fun observeIfCountryDeleted() {
         countriesListViewModel.isDeletedSuccessful.observe(viewLifecycleOwner, { isDeleted ->
             when (isDeleted) {
                 true -> { showSnackBar(binding.root, getString(R.string.country_list_fragment_delete_success)) }
@@ -104,7 +112,9 @@ class CountriesListFragment : Fragment() {
                 }
             }
         })
+    }
 
+    private fun observeIfCountriesLoaded() {
         countriesListViewModel.isLoadSuccessful.observe(viewLifecycleOwner, { isFetched ->
             when (isFetched) {
                 true -> { showSnackBar(binding.root, getString(R.string.country_list_fragment_fetch_success)) }
@@ -115,6 +125,12 @@ class CountriesListFragment : Fragment() {
                     ).showDialog(requireActivity())
                 }
             }
+        })
+    }
+
+    private fun observeLoading() {
+        countriesListViewModel.isLoading.observe(viewLifecycleOwner, { isLoading ->
+            binding.pbCountriesListLoading.visibility = if (isLoading) View.VISIBLE else View.GONE
         })
     }
 

@@ -30,7 +30,9 @@ class CurrentCountryFragment : Fragment(), EasyPermissions.PermissionCallbacks {
 
     private var _binding: CurrentCountryFragmentBinding? = null
     private val binding get() = _binding!!
+
     private val currentCountryViewModel by viewModels<CurrentCountryViewModel>()
+
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
     private val locationCallback = object: LocationCallback() {
@@ -55,12 +57,16 @@ class CurrentCountryFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         savedInstanceState: Bundle?
     ): View {
         _binding = CurrentCountryFragmentBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         requestPermissions()
         hideDataShowLoading()
-        observeData()
-
-        return binding.root
+        observeIfGetCountryData()
+        observeIfExceptionAppeared()
+        observeIfGetCountryName()
+        observeCountryData()
     }
 
     override fun onResume() {
@@ -81,32 +87,27 @@ class CurrentCountryFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         )
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        Log.d(TAG, "Fragment destroyed")
+    override fun onDestroyView() {
+        super.onDestroyView()
+        Log.d(TAG, "Binding reference set to null")
         _binding = null
     }
 
-    private fun observeData() {
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d(TAG, "Fragment destroyed")
+    }
+
+    private fun observeCountryData() {
         currentCountryViewModel.currentCountryData.observe(viewLifecycleOwner, { data ->
             Log.d(TAG, "Got data for current city: $data")
             hideDataShowLoading()
             updateUI(data)
             hideLoadingShowData()
         })
+    }
 
-        currentCountryViewModel.gettingCountryNameLiveSuccessful.observe(viewLifecycleOwner, {
-            when (it) {
-                false -> {
-                    DialogCreator(
-                        R.string.dialog_title_error,
-                        R.string.dialog_message_cannot_get_country_name
-                    ).showDialog(requireActivity())
-                }
-                true -> { showSnackBar(binding.root, getString(R.string.current_country_fragment_name_fetch_success)) }
-            }
-        })
-
+    private fun observeIfGetCountryData() {
         currentCountryViewModel.gettingCountryCovidDataSuccessful.observe(viewLifecycleOwner, {
             when (it) {
                 false -> {
@@ -118,7 +119,9 @@ class CurrentCountryFragment : Fragment(), EasyPermissions.PermissionCallbacks {
                 true -> { showSnackBar(binding.root, getString(R.string.current_country_fragment_covid_data_fetch_success)) }
             }
         })
+    }
 
+    private fun observeIfExceptionAppeared() {
         currentCountryViewModel.exceptionAppeared.observe(viewLifecycleOwner, {
             when (it) {
                 true -> {
@@ -129,6 +132,20 @@ class CurrentCountryFragment : Fragment(), EasyPermissions.PermissionCallbacks {
                     ).showDialog(requireActivity())
                 }
                 false -> { /* do nothing */ }
+            }
+        })
+    }
+
+    private fun observeIfGetCountryName() {
+        currentCountryViewModel.gettingCountryNameLiveSuccessful.observe(viewLifecycleOwner, {
+            when (it) {
+                false -> {
+                    DialogCreator(
+                        R.string.dialog_title_error,
+                        R.string.dialog_message_cannot_get_country_name
+                    ).showDialog(requireActivity())
+                }
+                true -> { showSnackBar(binding.root, getString(R.string.current_country_fragment_name_fetch_success)) }
             }
         })
     }
