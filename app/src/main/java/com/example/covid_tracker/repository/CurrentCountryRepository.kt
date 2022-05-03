@@ -1,13 +1,10 @@
 package com.example.covid_tracker.repository
 
-import com.example.covid_tracker.model.CountryData
-import com.example.covid_tracker.model.GeocodingModel
-import retrofit2.Response
+import com.example.covid_tracker.network.CovidApiResponse
+import kotlinx.coroutines.flow.Flow
 
 interface CurrentCountryRepository {
 
-    suspend fun getNameForCords(lat: String, lon: String): Response<GeocodingModel>
-
-    suspend fun getCountryCovidData(countryCode: String): Response<CountryData>
+    suspend fun getCountryData(name: String): Flow<CovidApiResponse>
 
 }

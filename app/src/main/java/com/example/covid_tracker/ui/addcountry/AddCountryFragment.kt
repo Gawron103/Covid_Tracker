@@ -31,22 +31,26 @@ class AddCountryFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = AddCountryFragmentBinding.inflate(inflater, container, false)
-
-        binding.ivAddCountryBack.setOnClickListener { navigateToCountriesList() }
-        binding.btnAdd.setOnClickListener { addCountry() }
-
-        observeData()
-
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        setupButtons()
+        observeIfCountryAdded()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        Log.d(TAG, "Binding reference set to null")
+        _binding = null
     }
 
     override fun onDestroy() {
         super.onDestroy()
         Log.d(TAG, "Fragment destroyed")
-        _binding = null
     }
 
-    private fun observeData() {
+    private fun observeIfCountryAdded() {
         addCountryViewModel.isCountrySaved.observe(viewLifecycleOwner, { isSaved ->
             when (isSaved) {
                 true -> {
@@ -65,8 +69,12 @@ class AddCountryFragment : Fragment() {
         })
     }
 
+    private fun setupButtons() {
+        binding.ivAddCountryBack.setOnClickListener { navigateToCountriesList() }
+        binding.btnAdd.setOnClickListener { addCountry() }
+    }
+
     private fun navigateToCountriesList() {
-        Log.d(TAG, "popBackStack")
         findNavController().popBackStack()
     }
 

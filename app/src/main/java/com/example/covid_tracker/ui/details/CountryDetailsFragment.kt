@@ -13,8 +13,8 @@ import com.bumptech.glide.Glide
 import com.example.covid_tracker.R
 import com.example.covid_tracker.databinding.CountryDetailsFragmentBinding
 import com.example.covid_tracker.model.CountryData
+import com.example.covid_tracker.network.CovidApiStatus
 import com.example.covid_tracker.utils.DialogCreator
-import com.example.covid_tracker.utils.showSnackBar
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -29,52 +29,53 @@ class CountryDetailsFragment : Fragment() {
 
     private val countryDetailsViewModel by viewModels<CountryDetailsViewModel>()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = CountryDetailsFragmentBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding.ivCountryDetailsBack.setOnClickListener {
             findNavController().popBackStack()
         }
 
-        countryDetailsViewModel.fetchCountryData(args.name)
+        countryDetailsViewModel.requestCountryCovidData(args.name)
 
-        observeData()
+        observeCountryData()
+    }
 
-        return binding.root
+    override fun onDestroyView() {
+        super.onDestroyView()
+        Log.d(TAG, "Binding reference set to null")
+        _binding = null
     }
 
     override fun onDestroy() {
         super.onDestroy()
         Log.d(TAG, "Fragment destroyed")
-        _binding = null
     }
 
-    private fun observeData() {
-        countryDetailsViewModel.countryData.observe(viewLifecycleOwner, { data ->
-            data?.let {
-                updateUI(data)
-            }
-        })
-
-        countryDetailsViewModel.fetchingData.observe(viewLifecycleOwner, {
-            when (it) {
-                true -> hideDataShowLoading()
-                false -> hideLoadingShowData()
-            }
-        })
-
-        countryDetailsViewModel.dataFetchSuccessful.observe(viewLifecycleOwner, {
-            when(it) {
-                true -> showSnackBar(binding.root, getString(R.string.country_details_fragment_data_fetch_success))
-                false -> {
+    private fun observeCountryData() {
+        countryDetailsViewModel.countryCovidData.observe(viewLifecycleOwner, { result ->
+            when (result.status) {
+                CovidApiStatus.SUCCESS -> {
+                    result.data?.let {
+                        updateUI(it)
+                        showErrorView(false)
+                        showDataOrLoading(false)
+                    }
+                }
+                CovidApiStatus.LOADING -> {
+                    showErrorView(false)
+                    showDataOrLoading(true)
+                }
+                CovidApiStatus.ERROR -> {
+                    showErrorView(true)
+                    Log.d(TAG, "Error: ${result.message}")
                     DialogCreator(
                         R.string.dialog_title_error,
                         R.string.dialog_message_cannot_fetch_data
@@ -103,24 +104,34 @@ class CountryDetailsFragment : Fragment() {
             .into(binding.ivCountryDetailsFlag)
     }
 
-    private fun hideDataShowLoading() {
-        binding.tvCountryDetailsName.visibility = View.GONE
-        binding.ivCountryDetailsFlag.visibility = View.GONE
-        binding.iCountryDetailsTotalData.tvCurrentCountryTotalLabel.visibility = View.GONE
-        binding.iCountryDetailsTotalData.glTotalData.visibility = View.GONE
-        binding.iCountryDetailsTodayData.tvCurrentCountryTodayLabel.visibility = View.GONE
-        binding.iCountryDetailsTodayData.glTodayData.visibility = View.GONE
-        binding.pbCountryDetailsLoading.visibility = View.VISIBLE
+    private fun showDataOrLoading(isLoading: Boolean) {
+        if (isLoading) {
+            binding.tvCountryDetailsName.visibility = View.GONE
+            binding.ivCountryDetailsFlag.visibility = View.GONE
+            binding.iCountryDetailsTotalData.tvCurrentCountryTotalLabel.visibility = View.GONE
+            binding.iCountryDetailsTotalData.glTotalData.visibility = View.GONE
+            binding.iCountryDetailsTodayData.tvCurrentCountryTodayLabel.visibility = View.GONE
+            binding.iCountryDetailsTodayData.glTodayData.visibility = View.GONE
+            binding.pbCountryDetailsLoading.visibility = View.VISIBLE
+        } else {
+            binding.tvCountryDetailsName.visibility = View.VISIBLE
+            binding.ivCountryDetailsFlag.visibility = View.VISIBLE
+            binding.iCountryDetailsTotalData.tvCurrentCountryTotalLabel.visibility = View.VISIBLE
+            binding.iCountryDetailsTotalData.glTotalData.visibility = View.VISIBLE
+            binding.iCountryDetailsTodayData.tvCurrentCountryTodayLabel.visibility = View.VISIBLE
+            binding.iCountryDetailsTodayData.glTodayData.visibility = View.VISIBLE
+            binding.pbCountryDetailsLoading.visibility = View.GONE
+        }
     }
 
-    private fun hideLoadingShowData() {
-        binding.tvCountryDetailsName.visibility = View.VISIBLE
-        binding.ivCountryDetailsFlag.visibility = View.VISIBLE
-        binding.iCountryDetailsTotalData.tvCurrentCountryTotalLabel.visibility = View.VISIBLE
-        binding.iCountryDetailsTotalData.glTotalData.visibility = View.VISIBLE
-        binding.iCountryDetailsTodayData.tvCurrentCountryTodayLabel.visibility = View.VISIBLE
-        binding.iCountryDetailsTodayData.glTodayData.visibility = View.VISIBLE
-        binding.pbCountryDetailsLoading.visibility = View.GONE
+    private fun showErrorView(show: Boolean) {
+        if (show) {
+            binding.tvCountryDetailsErrorLabel.visibility = View.VISIBLE
+            binding.tvCountryDetailsErrorMsg.visibility = View.VISIBLE
+        } else {
+            binding.tvCountryDetailsErrorLabel.visibility = View.GONE
+            binding.tvCountryDetailsErrorMsg.visibility = View.GONE
+        }
     }
 
 }
