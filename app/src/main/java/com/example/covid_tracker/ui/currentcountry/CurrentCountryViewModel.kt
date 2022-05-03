@@ -6,6 +6,7 @@ import com.example.covid_tracker.network.CovidApiResponse
 import com.example.covid_tracker.repository.CurrentCountryRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.cancellable
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
@@ -16,14 +17,17 @@ class CurrentCountryViewModel @Inject constructor(
 
     private val TAG = "CurrentCountryViewModel"
 
-    private val _data = MutableLiveData<CovidApiResponse>()
-    val data: LiveData<CovidApiResponse> get() = _data
+    private val _countryCovidData = MutableLiveData<CovidApiResponse>()
+    val countryCovidData: LiveData<CovidApiResponse> get() = _countryCovidData
 
-    fun requestCovidData(name: String) {
-        viewModelScope.launch(Dispatchers.IO) {
+    private var requestCountryCovidDataJob: Job? = null
+
+    fun requestCountryCovidData(name: String) {
+        requestCountryCovidDataJob = viewModelScope.launch(Dispatchers.IO) {
             repository.getCountryData(name)
+                .cancellable()
                 .collect {
-                    _data.postValue(it)
+                    _countryCovidData.postValue(it)
                 }
         }
     }
@@ -31,6 +35,7 @@ class CurrentCountryViewModel @Inject constructor(
     override fun onCleared() {
         Log.d(TAG, "CurrentCountryViewModel onCleared")
         super.onCleared()
+        requestCountryCovidDataJob?.cancel()
     }
 
 }

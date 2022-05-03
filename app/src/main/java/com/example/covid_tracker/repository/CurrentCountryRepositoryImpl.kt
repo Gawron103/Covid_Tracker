@@ -3,7 +3,7 @@ package com.example.covid_tracker.repository
 import com.example.covid_tracker.network.CountryApi
 import com.example.covid_tracker.network.CovidApiResponse
 import kotlinx.coroutines.flow.flow
-
+import kotlinx.coroutines.flow.onStart
 import javax.inject.Inject
 
 class CurrentCountryRepositoryImpl @Inject constructor(
@@ -12,8 +12,6 @@ class CurrentCountryRepositoryImpl @Inject constructor(
 
     override suspend fun getCountryData(name: String) =
         flow {
-            emit(CovidApiResponse.Loading(true))
-
             val covidResponse = countryDataApi.getCountryData(name)
 
             if (covidResponse.isSuccessful) {
@@ -22,6 +20,8 @@ class CurrentCountryRepositoryImpl @Inject constructor(
                 val message = covidResponse.errorBody()?.string() ?: "No message"
                 emit(CovidApiResponse.Error(message))
             }
+        }.onStart {
+            emit(CovidApiResponse.Loading(true))
         }
 
 }

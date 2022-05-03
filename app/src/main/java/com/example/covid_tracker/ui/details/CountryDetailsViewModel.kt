@@ -5,7 +5,10 @@ import androidx.lifecycle.*
 import com.example.covid_tracker.network.CovidApiResponse
 import com.example.covid_tracker.repository.CountryDetailsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -15,30 +18,25 @@ class CountryDetailsViewModel @Inject constructor(
 
     private val TAG = "CountryDetailsViewModel"
 
-    private val _data = MutableLiveData<CovidApiResponse>()
-    val data: LiveData<CovidApiResponse> get() = _data
+    private val _countryCovidData = MutableLiveData<CovidApiResponse>()
+    val countryCovidData: LiveData<CovidApiResponse> get() = _countryCovidData
 
-    fun getCountryData(name: String) =
-        flow {
-            val response = repository.getCountryData(name)
+    private var getCountryCovidDataJob: Job? = null
 
-            if (response.isSuccessful) {
-                emit(CovidApiResponse.Success(response.body()))
-            } else {
-                val errorMessage = response.errorBody()?.toString() ?: "No message"
-                response.errorBody()?.close()
-                emit(CovidApiResponse.Error(errorMessage))
-            }
-        }.onStart {
-            emit(CovidApiResponse.Loading(true))
-        }.catch { exception ->
-            val message = exception.localizedMessage ?: "No error message"
-            emit(CovidApiResponse.Error(message))
-        }.asLiveData()
+    fun requestCountryCovidData(name: String) {
+        getCountryCovidDataJob = viewModelScope.launch(Dispatchers.IO) {
+            repository.getCountryData(name)
+                .cancellable()
+                .collect {
+                    _countryCovidData.postValue(it)
+                }
+        }
+    }
 
     override fun onCleared() {
         Log.d(TAG, "CountryDetailsViewModel onCleared")
         super.onCleared()
+        getCountryCovidDataJob?.cancel()
     }
 
 }

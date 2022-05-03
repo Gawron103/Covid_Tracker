@@ -43,6 +43,8 @@ class CountryDetailsFragment : Fragment() {
             findNavController().popBackStack()
         }
 
+        countryDetailsViewModel.requestCountryCovidData(args.name)
+
         observeCountryData()
     }
 
@@ -58,7 +60,7 @@ class CountryDetailsFragment : Fragment() {
     }
 
     private fun observeCountryData() {
-        countryDetailsViewModel.getCountryData(args.name).observe(viewLifecycleOwner, { result ->
+        countryDetailsViewModel.countryCovidData.observe(viewLifecycleOwner, { result ->
             when (result.status) {
                 CovidApiStatus.SUCCESS -> {
                     result.data?.let {

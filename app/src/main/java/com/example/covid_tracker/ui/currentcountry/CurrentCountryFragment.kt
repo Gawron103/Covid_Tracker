@@ -56,7 +56,7 @@ class CurrentCountryFragment : Fragment(), EasyPermissions.PermissionCallbacks {
                     locationResult.lastLocation.latitude,
                     locationResult.lastLocation.longitude,
                     1).first().countryCode
-                currentCountryViewModel.requestCovidData(countryCode)
+                currentCountryViewModel.requestCountryCovidData(countryCode)
             }
         }
     }
@@ -108,7 +108,7 @@ class CurrentCountryFragment : Fragment(), EasyPermissions.PermissionCallbacks {
     }
 
     private fun observeCountryCovidData() {
-        currentCountryViewModel.data.observe(viewLifecycleOwner, { result ->
+        currentCountryViewModel.countryCovidData.observe(viewLifecycleOwner, { result ->
             result?.let {
                 when (result.status) {
                     CovidApiStatus.SUCCESS -> {
