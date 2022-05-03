@@ -38,7 +38,6 @@ class CountriesListFragment : Fragment() {
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         setupRecyclerView()
 
         observeLoading()

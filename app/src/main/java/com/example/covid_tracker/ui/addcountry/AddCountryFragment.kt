@@ -34,7 +34,6 @@ class AddCountryFragment : Fragment() {
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding.btnAdd.setOnClickListener { addCountry() }
         observeIfCountryAdded()
     }
