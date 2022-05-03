@@ -2,7 +2,6 @@ package com.example.covid_tracker.di
 
 import com.example.covid_tracker.network.CountryApi
 import com.example.covid_tracker.db.CountryDao
-import com.example.covid_tracker.network.GeocodingApi
 import com.example.covid_tracker.repository.*
 import dagger.Module
 import dagger.Provides
@@ -37,10 +36,9 @@ object RepositoryModule {
 
     @Provides
     fun provideCurrentCountryRepository(
-        geocodingApi: GeocodingApi,
         countryApi: CountryApi
     ): CurrentCountryRepository {
-        return CurrentCountryRepositoryImpl(geocodingApi, countryApi)
+        return CurrentCountryRepositoryImpl(countryApi)
     }
 
 }

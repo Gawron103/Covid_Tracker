@@ -1,9 +1,7 @@
 package com.example.covid_tracker.di
 
 import com.example.covid_tracker.network.CountryApi
-import com.example.covid_tracker.network.GeocodingApi
 import com.example.covid_tracker.utils.COVID_DATA_BASE_URL
-import com.example.covid_tracker.utils.OPEN_WEATHER_MAP_BASE_URL
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -31,22 +29,6 @@ object NetworkModule {
     @Provides
     fun provideCountryApi(@Named("CovidData") retrofit: Retrofit): CountryApi {
         return retrofit.create(CountryApi::class.java)
-    }
-
-    @Singleton
-    @Provides
-    @Named("GeocodingData")
-    fun provideGeocodingRetrofit(): Retrofit {
-        return Retrofit.Builder()
-            .baseUrl(OPEN_WEATHER_MAP_BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-    }
-
-    @Singleton
-    @Provides
-    fun provideGeocodingApi(@Named("GeocodingData") retrofit: Retrofit): GeocodingApi {
-        return retrofit.create(GeocodingApi::class.java)
     }
 
 }
