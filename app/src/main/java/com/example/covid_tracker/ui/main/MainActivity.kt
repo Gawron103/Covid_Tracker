@@ -30,6 +30,7 @@ class MainActivity : AppCompatActivity() {
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
                 R.id.countriesListFragment, R.id.addCountryFragment -> {
+                    binding.bottomNavigationView.visibility = View.VISIBLE
                     binding.bottomNavigationView.menu.findItem(R.id.addCountryFragment).isVisible = true
                 }
                 R.id.countryDetailsFragment -> {

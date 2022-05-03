@@ -58,7 +58,7 @@ class AddCountryFragment : Fragment() {
                     showSnackBar(binding.root, getString(R.string.add_country_saved_country))
                 }
                 false -> {
-                    hideLoadingShowLayout()
+                    showLayoutOrLoading(false)
                     DialogCreator(
                         R.string.dialog_title_error,
                         R.string.dialog_message_cannot_add_country
@@ -76,31 +76,31 @@ class AddCountryFragment : Fragment() {
     private fun addCountry() {
         when (binding.etAddCountryCountryInput.text.isNotEmpty()) {
             true -> {
-                hideLayoutShowLoading()
+                showLayoutOrLoading(true)
                 addCountryViewModel.saveCountryInDB(binding.etAddCountryCountryInput.text.trim().toString())
             }
             else -> { showSnackBar(binding.root, "Enter country name") }
         }
     }
 
-    private fun hideLayoutShowLoading() {
-        binding.ivAddCountryAddCountryImg.visibility = View.GONE
-        binding.tvAddCountryInfoLabel.visibility = View.GONE
-        binding.etAddCountryCountryInput.visibility = View.GONE
-        binding.btnAdd.visibility = View.GONE
+    private fun showLayoutOrLoading(isLoading: Boolean) {
+        if (isLoading) {
+            binding.ivAddCountryAddCountryImg.visibility = View.GONE
+            binding.tvAddCountryInfoLabel.visibility = View.GONE
+            binding.etAddCountryCountryInput.visibility = View.GONE
+            binding.btnAdd.visibility = View.GONE
 
-        binding.pbAddCountryLoading.visibility = View.VISIBLE
-        binding.tvAddCountryLoadingText.visibility = View.VISIBLE
-    }
+            binding.pbAddCountryLoading.visibility = View.VISIBLE
+            binding.tvAddCountryLoadingText.visibility = View.VISIBLE
+        } else {
+            binding.ivAddCountryAddCountryImg.visibility = View.VISIBLE
+            binding.tvAddCountryInfoLabel.visibility = View.VISIBLE
+            binding.etAddCountryCountryInput.visibility = View.VISIBLE
+            binding.btnAdd.visibility = View.VISIBLE
 
-    private fun hideLoadingShowLayout() {
-        binding.ivAddCountryAddCountryImg.visibility = View.VISIBLE
-        binding.tvAddCountryInfoLabel.visibility = View.VISIBLE
-        binding.etAddCountryCountryInput.visibility = View.VISIBLE
-        binding.btnAdd.visibility = View.VISIBLE
-
-        binding.pbAddCountryLoading.visibility = View.GONE
-        binding.tvAddCountryLoadingText.visibility = View.GONE
+            binding.pbAddCountryLoading.visibility = View.GONE
+            binding.tvAddCountryLoadingText.visibility = View.GONE
+        }
     }
 
 }

@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.SearchView
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -39,6 +40,7 @@ class CountriesListFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        setupSearchBar()
         setupRecyclerView()
 
         observeLoading()
@@ -58,6 +60,20 @@ class CountriesListFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         Log.d(TAG, "Fragment destroyed")
+    }
+
+    private fun setupSearchBar() {
+        binding.svCountriesSearch.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                countriesListAdapter.getFilter().filter(query)
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                countriesListAdapter.getFilter().filter(newText)
+                return true
+            }
+        })
     }
 
     private fun setupRecyclerView() {
@@ -88,7 +104,7 @@ class CountriesListFragment : Fragment() {
             when (data.isEmpty()) {
                 true -> { binding.tvNoCountries.visibility = View.VISIBLE }
                 false -> {
-                    countriesListAdapter.setCountries(data)
+                    countriesListAdapter.setCountries(ArrayList(data))
                     binding.tvNoCountries.visibility = View.GONE
                 }
             }
