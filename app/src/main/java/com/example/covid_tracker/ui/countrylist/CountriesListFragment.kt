@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -26,6 +27,8 @@ class CountriesListFragment : Fragment() {
     private var _binding: CountriesListFragmentBinding? = null
     private val binding get() = _binding!!
 
+    private var countryViewAsList = true
+
     private val countriesListViewModel by viewModels<CountriesListViewModel>()
 
     private lateinit var countriesListAdapter: CountriesListAdapter
@@ -42,6 +45,10 @@ class CountriesListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         setupSearchBar()
         setupRecyclerView()
+
+        binding.ivCountryListSwitchLayout.setOnClickListener {
+            switchLayout()
+        }
 
         observeLoading()
         observeIfCountriesLoaded()
@@ -82,7 +89,10 @@ class CountriesListFragment : Fragment() {
         binding.rvCountriesList.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = countriesListAdapter
+
         }
+
+        binding.rvCountriesList.setHasFixedSize(true)
 
         ItemTouchHelper(object: ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT or ItemTouchHelper.LEFT) {
             override fun onMove(
@@ -97,6 +107,14 @@ class CountriesListFragment : Fragment() {
                 countriesListViewModel.deleteCountry(countriesListAdapter.getCountryAt(viewHolder.adapterPosition))
             }
         }).attachToRecyclerView(binding.rvCountriesList)
+    }
+
+    private fun switchLayout() {
+        countryViewAsList = !countryViewAsList
+        binding.rvCountriesList.layoutManager = if (countryViewAsList) GridLayoutManager(requireContext(), 2) else LinearLayoutManager(requireContext())
+        binding.ivCountryListSwitchLayout.setImageResource(if (countryViewAsList) R.drawable.ic_grid_view else R.drawable.ic_list_view)
+        binding.rvCountriesList.adapter = countriesListAdapter
+        Log.d(TAG, "Recycler view layout manager set to: ${if (countryViewAsList) "Linear" else "Grid"}")
     }
 
     private fun observeCountries() {

@@ -22,11 +22,24 @@
 
     <SearchView
         android:id="@+id/sv_CountriesSearch"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="16dp"
+        android:gravity="end"
+        app:layout_constraintEnd_toStartOf="@+id/iv_CountryList_SwitchLayout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/iv_CountryList_SwitchLayout"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginEnd="16dp"
+        android:src="@drawable/ic_list_view"
+        app:layout_constraintBottom_toTopOf="@+id/rv_CountriesList"
+        app:layout_constraintDimensionRatio=""
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/sv_CountriesSearch" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_CountriesList"
